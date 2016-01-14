@@ -1,28 +1,11 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+android/billing/gen/
+android/billing/bin/
+example/HelloWorldBilling/proj.win32/Debug/
+*.sdf
+example/HelloWorldBilling/proj.android/bin/
+example/HelloWorldBilling/proj.android/gen/
+example/HelloWorldBilling/proj.android/obj/local/armeabi-v7a/objs/
+example/HelloWorldBilling/proj.android/obj/
+*.opensdf
+example/HelloWorldBilling/proj.android/out/
+example/HelloWorldBilling/proj.android/.idea/
