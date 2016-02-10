@@ -129,6 +129,8 @@ Json::Value _details(Json::arrayValue);
 
 void billingSimulatorInit()
 {
+    DebugActor::initialize();
+
     file::buffer bf;
     file::read(".billing", bf, ep_ignore_error);
 

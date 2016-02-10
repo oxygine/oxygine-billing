@@ -14,9 +14,10 @@ class Content: public Actor
 public:
     Content(): driver(0) {}
     IVideoDriver* driver;
-
+	/*
     void render(const RenderState& parentRS)
     {
+		
 
         parentRS.renderer->drawBatch();
 
@@ -27,6 +28,7 @@ public:
         Actor::render(rs);
         renderer.end();
     }
+	*/
 };
 
 DECLARE_SMART(Test, spTest);
