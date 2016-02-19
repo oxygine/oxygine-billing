@@ -35,11 +35,16 @@ public class BillingGoogle extends Billing {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             _service = null;
+            
+            Log.d(TAG, "billing.service disconnected");
+            return;
+                    
         }
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             _service = IInAppBillingService.Stub.asInterface(service);
+            Log.d(TAG, "billing.service connected");
         }
     };
 
@@ -168,7 +173,10 @@ public class BillingGoogle extends Billing {
             public void run() {
                 try {
                     if (_service == null)
+                    {
+                        Log.d(TAG, "billing.requestDetails failed service is null");
                         return;
+                    }
 
                     Log.d(TAG, "billing.requestDetails");
 
@@ -221,7 +229,10 @@ public class BillingGoogle extends Billing {
         new Thread(new Runnable() {
             public void run() {
                 if (_service == null)
-                    return;
+                    {
+                        Log.d(TAG, "billing.consume failed service is null");
+                        return;
+                    }
 
                 try {
                     Log.d(TAG, "billing.consume");
@@ -242,7 +253,10 @@ public class BillingGoogle extends Billing {
         _activity.runOnUiThread(new Runnable() {
             public void run() {
                 if (_service == null)
-                    return;
+                    {
+                        Log.d(TAG, "billing.purchase failed service is null");
+                        return;
+                    }
 
                 try {
                     Log.d(TAG, "billing.purchase");
