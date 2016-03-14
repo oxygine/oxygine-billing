@@ -1,7 +1,7 @@
 #include "BillingSimulator.h"
 #include "Actor.h"
 #include "ColorRectSprite.h"
-#include "TextActor.h"
+#include "TextField.h"
 #include "Stage.h"
 #include "Box9Sprite.h"
 #include "DebugActor.h"
@@ -19,7 +19,7 @@ class Btn : public Box9Sprite
 public:
     Btn()
     {
-        _txt = new TextActor;
+        _txt = new TextField;
         _txt->setText("OK");
         _txt->setAlign(TextStyle::VALIGN_MIDDLE, TextStyle::HALIGN_CENTER);
         addChild(_txt);
@@ -49,7 +49,7 @@ public:
         _txt->setSize(size);
     }
 
-    spTextActor _txt;
+    spTextField _txt;
 };
 
 DECLARE_SMART(BillingDialog, spBillingDialog);
@@ -74,7 +74,7 @@ public:
         _bg = new Box9Sprite;
         addChild(_bg);
 
-        _title = new TextActor;
+		_title = new TextField;
         _title->setAlign(TextStyle::VALIGN_MIDDLE, TextStyle::HALIGN_CENTER);
         _title->setMultiline(true);
         _title->setColor(Color::Black);
@@ -118,7 +118,7 @@ public:
     }
 
     spBox9Sprite        _bg;
-    spTextActor         _title;
+    spTextField         _title;
     spBtn               _btnOk;
     spBtn               _btnCancel;
 };
