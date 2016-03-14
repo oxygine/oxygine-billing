@@ -87,6 +87,7 @@ void jniBillingInit()
     }
     catch (const notFound&)
     {
+        log::error("jniBillingInit failed, class/member not found");
 
     }
 }

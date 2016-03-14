@@ -24,6 +24,7 @@ public class MainActivity extends OxygineActivity
         else
             addObserver(new BillingAmazon());
 
+        //!!!!!!!!!!!!!!!!!!! IT IS IMPORTANT !!!! super.onCreate should be AT THE END of method
         super.onCreate(savedInstanceState);
     }
 }
