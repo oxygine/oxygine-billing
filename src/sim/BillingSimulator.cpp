@@ -74,7 +74,7 @@ public:
         _bg = new Box9Sprite;
         addChild(_bg);
 
-		_title = new TextField;
+        _title = new TextField;
         _title->setAlign(TextStyle::VALIGN_MIDDLE, TextStyle::HALIGN_CENTER);
         _title->setMultiline(true);
         _title->setColor(Color::Black);
