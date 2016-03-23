@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "core/oxygine.h"
 #include "core/Object.h"
-#include "core/ThreadMessages.h"
+#include "core/ThreadDispatcher.h"
 #include "core/oxygine.h"
 #include "AndroidBilling.h"
 #include "core/android/jniHelper.h"
@@ -47,7 +47,7 @@ extern "C"
             vls.append(v);
         }
 
-        core::getMainThreadMessages().postCallback([ = ]()
+        core::getMainThreadDispatcher().postCallback([ = ]()
         {
             billing::internal::detailed(vls);
         });
@@ -63,7 +63,7 @@ extern "C"
 
         OX_ASSERT(signatures.size() == items.size());
 
-        core::getMainThreadMessages().postCallback([ = ]()
+        core::getMainThreadDispatcher().postCallback([ = ]()
         {
             for (size_t i = 0; i < items.size(); ++i)
                 billing::internal::purchased(items[i], signatures[i]);
