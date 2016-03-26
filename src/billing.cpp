@@ -19,6 +19,8 @@ namespace oxygine
         void init()
         {
             log::messageln("billing::init");
+            OX_ASSERT(!_dispatcher);
+
             _dispatcher = new EventDispatcher;
 
 #ifdef __ANDROID__
@@ -35,6 +37,7 @@ namespace oxygine
 #ifdef __ANDROID__
             jniBillingFree();
 #endif
+            _dispatcher->removeAllEventListeners();
             _dispatcher = 0;
         }
 
