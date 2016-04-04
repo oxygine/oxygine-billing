@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.+'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+dependencies {
+        compile(project(':oxygine-extension'))
+        compile(project(':oxygine-lib')) { exclude module: 'oxygine-extension' }
+        compile project(':oxygine-billing')
+    }
+
+task build_ndk(type: Exec) {
+    commandLine 'cmd', '/c', 'build.bat'
+    standardOutput = new ByteArrayOutputStream()
+
+    ext.output = {
+        return standardOutput.toString()
+    }
+
+}     
+
+android {
+		lintOptions {
+        	abortOnError false
+    	}
+
+        compileSdkVersion 23
+  		buildToolsVersion '23.0.2'
+
+         tasks.withType(JavaCompile) {
+                compileTask -> compileTask.dependsOn build_ndk
+        }
+
+  		sourceSets {
+            main {
+                manifest.srcFile 'AndroidManifest.xml'
+                java.srcDirs = ['src']
+                res.srcDirs = ['res']
+            }
+        }
+}

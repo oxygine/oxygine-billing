@@ -1,0 +1,2 @@
+include 'oxygine-extension'
+project(':oxygine-extension').projectDir = new File('../../../oxygine-framework/oxygine/SDL/android/extension')

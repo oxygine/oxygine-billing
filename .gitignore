@@ -9,3 +9,7 @@ example/HelloWorldBilling/proj.android/obj/
 *.opensdf
 example/HelloWorldBilling/proj.android/out/
 example/HelloWorldBilling/proj.android/.idea/
+android/billing/.gradle/
+android/billing/build/
+example/HelloWorldBilling/proj.android/.gradle/
+example/HelloWorldBilling/proj.android/build/
