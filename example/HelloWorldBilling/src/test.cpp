@@ -1,6 +1,7 @@
 #include "test.h"
 #include "oxygine-framework.h"
 #include "core/STDFileSystem.h"
+#include "WebImage.h"
 
 Resources Test::resourcesUI;
 file::STDFileSystem extfs(true);
@@ -8,8 +9,8 @@ spTest Test::instance;
 
 void Test::init()
 {
-    //mount additional file system with inner path "ext"
-    //it would be used for searching path in data/ext
+    //Mount additional file system with inner path "ext"
+    //Used for searching files in data/ext
     extfs.setPath(file::fs().getFullPath("ext").c_str());
     file::mount(&extfs);
 
@@ -17,21 +18,19 @@ void Test::init()
     resourcesUI.loadXML("demo/fonts.xml");
 
 
-    spSprite sp = new Sprite;
-    sp->setResAnim(resourcesUI.getResAnim("logo2"));
-    sp->setInputEnabled(false);
+    HttpRequestTask::init();
+
+    //Load logo from oxygine server
+    spWebImage sp = new WebImage;
+    sp->load("http://oxygine.org/test/logo.png");
+    sp->setTouchEnabled(false);
     sp->attachTo(getStage());
     sp->setPriority(10);
     sp->setAlpha(128);
+    sp->setSize(150, 107);
 
     sp->setX(getStage()->getWidth() - sp->getWidth());
     sp->setY(getStage()->getHeight() - sp->getHeight());
-}
-
-void Test::run(spTest actor)
-{
-	instance = actor;
-	actor->attachTo(getStage());
 }
 
 void Test::free()
@@ -39,6 +38,7 @@ void Test::free()
     resourcesUI.free();
     instance->detach();
     instance = 0;
+    HttpRequestTask::release();
 }
 
 class Toggle: public Button
@@ -54,13 +54,20 @@ public:
     std::vector<Test::toggle> _items;
 };
 
-spTextField createText(std::string txt)
+Color textColor(72, 61, 139, 255);
+
+spTextField createText(const std::string& txt)
 {
     spTextField text = new TextField();
 
     TextStyle style;
+
+#if OXYGINE_VERSION > 3
+    style.font = Test::resourcesUI.getResFont("main");
+#else
     style.font = Test::resourcesUI.getResFont("main")->getFont();
-    style.color = Color(72, 61, 139, 255);
+#endif
+    style.color = textColor;
     style.vAlign = TextStyle::VALIGN_MIDDLE;
     style.hAlign = TextStyle::HALIGN_CENTER;
     style.multiline = true;
@@ -71,14 +78,14 @@ spTextField createText(std::string txt)
     return text;
 }
 
-spButton createButtonHelper(spButton button, string txt, EventCallback cb)
+spButton createButtonHelper(spButton button, const std::string& txt, EventCallback cb)
 {
     button->setPriority(10);
     //button->setName(id);
     button->setResAnim(Test::resourcesUI.getResAnim("button"));
     button->addEventListener(TouchEvent::CLICK, cb);
 
-    //create Actor with Text and it to button as child
+    //Create Actor with Text and add it to button as child
     spTextField text = createText(txt);
     text->setSize(button->getSize());
     text->attachTo(button);
@@ -87,7 +94,7 @@ spButton createButtonHelper(spButton button, string txt, EventCallback cb)
 }
 
 
-Test::Test()
+Test::Test() : _color(Color::White), _txtColor(72, 61, 139, 255)
 {
     setSize(getStage()->getSize());
 
@@ -119,18 +126,21 @@ Test::~Test()
 
 spButton Test::addButton(std::string id, std::string txt)
 {
+    textColor = _txtColor;
     spButton button = createButtonHelper(new Button, txt, CLOSURE(this, &Test::_clicked));
     initActor(button.get(),
               arg_name = id,
               arg_attachTo = ui,
               arg_anchor = Vector2(0.5f, 0.0f),
               arg_pos = Vector2(_x, _y));
+    button->setColor(_color);
+    textColor = Color(72, 61, 139, 255);
 
     _y += button->getHeight() + 2.0f;
 
     if (_y + button->getHeight() >= getHeight())
     {
-        _y = 0;
+        _y = 5;
         _x += button->getWidth() + 70;
     }
 

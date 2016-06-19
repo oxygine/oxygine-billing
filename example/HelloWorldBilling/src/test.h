@@ -3,32 +3,34 @@
 #include "Button.h"
 #include "RenderState.h"
 #include "STDRenderer.h"
+#include "TextField.h"
 using namespace oxygine;
 using namespace std;
 
 
-spButton createButtonHelper(spButton, std::string txt, EventCallback cb);
+spTextField createText(const std::string& txt);
+spButton createButtonHelper(spButton, const std::string& txt, EventCallback cb);
 
 class Content: public Actor
 {
 public:
-    Content(): driver(0) {}
+    Content() : driver(0) { setName("content"); }
     IVideoDriver* driver;
-	/*
+
+    /*
     void render(const RenderState& parentRS)
     {
-		
 
         parentRS.renderer->drawBatch();
 
         RenderState rs = parentRS;
         STDRenderer renderer(driver ? driver : IVideoDriver::instance);
-        renderer.begin(parentRS.renderer);
+        renderer.Renderer::begin(parentRS.renderer);
         rs.renderer = &renderer;
         Actor::render(rs);
         renderer.end();
     }
-	*/
+    */
 };
 
 DECLARE_SMART(Test, spTest);
@@ -39,7 +41,6 @@ public:
     ~Test();
 
     static void init();
-	static void run(spTest actor);
     static void free();
     static spTest instance;
 
@@ -66,6 +67,9 @@ public:
 
 protected:
     void notifyDone(Event* ev);
+
+    Color _color;
+    Color _txtColor;
 
     float _x;
     float _y;

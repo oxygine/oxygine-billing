@@ -41,7 +41,7 @@ void example_init()
 	});
 
 	Test::init();
-	Test::run(new TestActor);
+	getStage()->addChild(new TestActor);
 }
 
 

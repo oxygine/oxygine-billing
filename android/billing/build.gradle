@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.+'
+
     }
 }
 
@@ -11,7 +12,10 @@ apply plugin: 'com.android.library'
 
 dependencies {
         compile project(':oxygine-extension')
-        compile fileTree(dir: 'libs', include: ['*.jar'])
+        FileTree tree = fileTree(dir: 'libs', include: ['*.jar'])
+        tree.exclude "*support-v4*"
+        compile tree
+        compile "com.android.support:support-v4:18.0.+"
 
     }
 
