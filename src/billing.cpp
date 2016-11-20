@@ -2,6 +2,8 @@
 
 #ifdef __ANDROID__
 #include "android/AndroidBilling.h"
+#elif ( defined __APPLE__ )
+#include "ios/IosBilling.h"
 #else
 #include "sim/BillingSimulator.h"
 #endif
@@ -25,6 +27,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingInit();
+#elif ( defined __APPLE__ )
+            iosBillingInit();
 #else
             billingSimulatorInit();
 #endif
@@ -36,21 +40,29 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingFree();
+#elif ( defined __APPLE__ )
+            iosBillingFree();
 #endif
             _dispatcher->removeAllEventListeners();
             _dispatcher = 0;
         }
 
+
+        
         void purchase(const std::string& id, const std::string& payload)
         {
             log::messageln("billing::purchase %s", id.c_str());
 
 #ifdef __ANDROID__
             jniBillingPurchase(id, payload);
+#elif ( defined __APPLE__ )
+            iosBillingPurchase(id, payload);
 #else
             billingSimulatorPurchase(id, payload);
 #endif
         }
+
+
 
         void consume(const std::string& token)
         {
@@ -58,17 +70,25 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingConsume(token);
+#elif ( defined __APPLE__ )
+            iosBillingConsume(token);
 #else
             billingSimulatorConsume(token);
 #endif
         }
 
+
+        
+       
+        
         void requestPurchases()
         {
             log::messageln("billing::requestPurchases");
 
 #ifdef __ANDROID__
             jniBillingGetPurchases();
+#elif ( defined __APPLE__ )
+            iosBillingGetPurchases();
 #else
             billingSimulatorGetPurchases();
 #endif
@@ -80,6 +100,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingUpdate(items);
+#elif ( defined __APPLE__ )
+            iosBillingUpdate(items);
 #else
             billingSimulatorRequestDetails(items);
 #endif
@@ -88,6 +110,8 @@ namespace oxygine
         void simulatorSetDetails(const Json::Value& details)
         {
 #ifdef __ANDROID__
+
+#elif ( defined __APPLE__ )
 
 #else
             billingSimulatorSetDetails(details);
