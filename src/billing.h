@@ -90,9 +90,11 @@ namespace oxygine
         /**free oxygine-billing module*/
         void free();
 
-
         void purchase(const std::string& id, const std::string& payload);
+        
+        
         void consume(const std::string& token);
+        
 
         void requestPurchases();
         void requestDetails(const std::vector<std::string>& items);

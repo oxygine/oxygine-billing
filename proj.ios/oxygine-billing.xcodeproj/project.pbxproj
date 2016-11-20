@@ -1,0 +1,273 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0411ED1D1DE0CA770001DEE9 /* billing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0411ED1B1DE0CA770001DEE9 /* billing.cpp */; };
+		0411ED201DE0CAA60001DEE9 /* IosBilling.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0411ED1F1DE0CAA60001DEE9 /* IosBilling.mm */; };
+		0411ED231DE0CADD0001DEE9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0411ED221DE0CADD0001DEE9 /* StoreKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		92EEFD4A1BD1FECA00DEAA40 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0411ED1B1DE0CA770001DEE9 /* billing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = billing.cpp; path = ../src/billing.cpp; sourceTree = "<group>"; };
+		0411ED1C1DE0CA770001DEE9 /* billing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = billing.h; path = ../src/billing.h; sourceTree = "<group>"; };
+		0411ED1E1DE0CAA60001DEE9 /* IosBilling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IosBilling.h; path = ../src/ios/IosBilling.h; sourceTree = "<group>"; };
+		0411ED1F1DE0CAA60001DEE9 /* IosBilling.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IosBilling.mm; path = ../src/ios/IosBilling.mm; sourceTree = "<group>"; };
+		0411ED221DE0CADD0001DEE9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		92EEFD4C1BD1FECA00DEAA40 /* liboxygine-billing.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liboxygine-billing.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		92EEFD491BD1FECA00DEAA40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0411ED231DE0CADD0001DEE9 /* StoreKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0411ED211DE0CADD0001DEE9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0411ED221DE0CADD0001DEE9 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		92EEFD431BD1FECA00DEAA40 = {
+			isa = PBXGroup;
+			children = (
+				92EEFD581BD1FEDD00DEAA40 /* src */,
+				92EEFD4D1BD1FECA00DEAA40 /* Products */,
+				0411ED211DE0CADD0001DEE9 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		92EEFD4D1BD1FECA00DEAA40 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				92EEFD4C1BD1FECA00DEAA40 /* liboxygine-billing.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		92EEFD581BD1FEDD00DEAA40 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0411ED1E1DE0CAA60001DEE9 /* IosBilling.h */,
+				0411ED1F1DE0CAA60001DEE9 /* IosBilling.mm */,
+				0411ED1B1DE0CA770001DEE9 /* billing.cpp */,
+				0411ED1C1DE0CA770001DEE9 /* billing.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		92EEFD4B1BD1FECA00DEAA40 /* oxygine-billing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92EEFD551BD1FECA00DEAA40 /* Build configuration list for PBXNativeTarget "oxygine-billing" */;
+			buildPhases = (
+				92EEFD481BD1FECA00DEAA40 /* Sources */,
+				92EEFD491BD1FECA00DEAA40 /* Frameworks */,
+				92EEFD4A1BD1FECA00DEAA40 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "oxygine-billing";
+			productName = "oxygine-movie";
+			productReference = 92EEFD4C1BD1FECA00DEAA40 /* liboxygine-billing.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		92EEFD441BD1FECA00DEAA40 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = oxygine;
+				TargetAttributes = {
+					92EEFD4B1BD1FECA00DEAA40 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+				};
+			};
+			buildConfigurationList = 92EEFD471BD1FECA00DEAA40 /* Build configuration list for PBXProject "oxygine-billing" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 92EEFD431BD1FECA00DEAA40;
+			productRefGroup = 92EEFD4D1BD1FECA00DEAA40 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				92EEFD4B1BD1FECA00DEAA40 /* oxygine-billing */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		92EEFD481BD1FECA00DEAA40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0411ED1D1DE0CA770001DEE9 /* billing.cpp in Sources */,
+				0411ED201DE0CAA60001DEE9 /* IosBilling.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		92EEFD531BD1FECA00DEAA40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "../src ../../oxygine-framework/oxygine/src ../../oxygine-sound/dependencies/tremor/tremor ../../oxygine-sound/dependencies/libogg/include ../../oxygine-sound/dependencies/openal/include ../deps/libtheora/include";
+			};
+			name = Debug;
+		};
+		92EEFD541BD1FECA00DEAA40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "../src ../../oxygine-framework/oxygine/src ../../oxygine-sound/dependencies/tremor/tremor ../../oxygine-sound/dependencies/libogg/include ../../oxygine-sound/dependencies/openal/include ../deps/libtheora/include";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		92EEFD561BD1FECA00DEAA40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
+			};
+			name = Debug;
+		};
+		92EEFD571BD1FECA00DEAA40 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		92EEFD471BD1FECA00DEAA40 /* Build configuration list for PBXProject "oxygine-billing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92EEFD531BD1FECA00DEAA40 /* Debug */,
+				92EEFD541BD1FECA00DEAA40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92EEFD551BD1FECA00DEAA40 /* Build configuration list for PBXNativeTarget "oxygine-billing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92EEFD561BD1FECA00DEAA40 /* Debug */,
+				92EEFD571BD1FECA00DEAA40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 92EEFD441BD1FECA00DEAA40 /* Project object */;
+}
