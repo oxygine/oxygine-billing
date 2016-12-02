@@ -24,6 +24,7 @@ namespace oxygine
             ParsePurchasedData(const PurchasedEvent* event);
 
             std::string productID;
+            std::string purchaseToken;
         };
 
         class DetailsEvent : public Event

@@ -154,5 +154,12 @@ namespace oxygine
             }
             */
         }
+
+        ParsePurchasedData::ParsePurchasedData(const PurchasedEvent* event)
+        {
+            const Json::Value& item = event->data;
+            productID = item["productId"].asCString();
+            purchaseToken = item["purchaseToken"].asCString();
+        }
     }
 }
