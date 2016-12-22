@@ -106,7 +106,7 @@ public:
         _bg->setSize(size);
 
         Vector2 center = core::getDisplaySize().cast<Vector2>() / 2.0f;
-        center = getStage()->global2local(center);
+        center = getStage()->parent2local(center);
 
         float sx = getStage()->getScaleX();
         setPosition(center - size / sx / 2);
