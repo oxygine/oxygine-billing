@@ -43,7 +43,7 @@ namespace oxygine
 
         void purchase(const std::string& id, const std::string& payload)
         {
-            log::messageln("billing::purchase %s", id.c_str());
+            log::messageln("billing::purchase '%s', payload '%s'", id.c_str(), payload.c_str());
 
 #ifdef __ANDROID__
             jniBillingPurchase(id, payload);
@@ -123,14 +123,7 @@ namespace oxygine
         {
             void purchased(const std::string& data_, const std::string& sign_)
             {
-                Json::Value data;
-                Json::Value sign;
-
-                Json::Reader reader;
-                reader.parse(data_, data, false);
-                reader.parse(sign_, sign, false);
-
-                PurchasedEvent ev(data, sign);
+                PurchasedEvent ev(data_, sign_);
                 _dispatcher->dispatchEvent(&ev);
             }
 
@@ -157,9 +150,11 @@ namespace oxygine
 
         ParsePurchasedData::ParsePurchasedData(const PurchasedEvent* event)
         {
-            const Json::Value& item = event->data;
-            productID = item["productId"].asCString();
-            purchaseToken = item["purchaseToken"].asCString();
+            Json::Reader reader;
+            reader.parse(event->data, data, false);
+
+            productID = data["productId"].asCString();
+            purchaseToken = data["purchaseToken"].asCString();
         }
     }
 }

@@ -196,6 +196,7 @@ void billingSimulatorPurchase(const string& id, const string& payload)
                 char str[255];
                 safe_sprintf(str, "%lld", getTimeUTCMS());
                 data["purchaseToken"] = str;
+                data["developerPayload"] = payload;
 
                 Json::Value item(Json::objectValue);
                 item["data"] = data;

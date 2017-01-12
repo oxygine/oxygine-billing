@@ -12,16 +12,20 @@ namespace oxygine
         {
         public:
             enum { EVENT = sysEventID('b', 'p', 'r') };
-            PurchasedEvent(const Json::Value& data_, const Json::Value& signature_) : Event(EVENT), data(data_), signature(signature_) {}
-
-            Json::Value data;
-            Json::Value signature;
+            PurchasedEvent(const std::string& data_, const std::string& signature_) : Event(EVENT), data(data_), signature(signature_) {}
+            
+            std::string data;
+            std::string signature;
         };
 
         class ParsePurchasedData
         {
         public:
             ParsePurchasedData(const PurchasedEvent* event);
+
+
+            Json::Value data;
+            Json::Value signature;
 
             std::string productID;
             std::string purchaseToken;
