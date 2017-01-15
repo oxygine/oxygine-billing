@@ -13,3 +13,8 @@ android/billing/.gradle/
 android/billing/build/
 example/HelloWorldBilling/proj.android/.gradle/
 example/HelloWorldBilling/proj.android/build/
+example/HelloWorldBilling/proj.win32/Debug_v140/
+example/HelloWorldBilling/proj.android/libs/
+*.db
+*.suo
+*.opendb

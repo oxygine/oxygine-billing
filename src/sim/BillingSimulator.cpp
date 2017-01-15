@@ -252,7 +252,17 @@ void billingSimulatorRequestDetails(const vector<string>& items)
 {
     getStage()->addTween(TweenDummy(), rand() % 1000 + 500)->setDoneCallback([ = ](Event*)
     {
-        billing::internal::detailed(_details);
+        Json::Value data(Json::arrayValue);
+        for (size_t i = 0; i < items.size(); ++i)
+        {
+            for (size_t n = 0; n < _details.size(); ++n)
+            {
+                if (_details[n]["productId"].asString() == items[i])
+                    data.append(_details[i]);
+            }
+        }
+        Json::FastWriter writer;
+        billing::internal::detailed(writer.write(data));
     });
 }
 

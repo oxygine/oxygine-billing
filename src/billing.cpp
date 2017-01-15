@@ -94,22 +94,40 @@ namespace oxygine
 #endif
         }
 
+        std::string getString(const Json::Value& obj, const string& key, const string& def = "")
+        {
+            if (obj[key].isNull())
+                return def;
+            return obj[key].asString();
+        }
+
+        Json::Int64 getInt64(const Json::Value& obj, const string& key, const Json::Int64 def = 0)
+        {
+            if (obj[key].isNull())
+                return def;
+            return obj[key].asInt64();
+        }
+
         ParsedDetailsData::ParsedDetailsData(const DetailsEvent* event)
         {
-            for (Json::ArrayIndex i = 0; i < event->data.size(); ++i)
+            Json::Value data;
+            Json::Reader reader;
+            reader.parse(event->data, data, false);
+
+            for (Json::ArrayIndex i = 0; i < data.size(); ++i)
             {
-                const Json::Value& item = event->data[i];
+                const Json::Value& item = data[i];
 
                 Item it;
 
 #if 1//def __ANDROID__
-                it.productId            = item["productId"].asCString();
-                it.description          = item["description"].asCString();
-                it.price                = item["price"].asCString();
-                it.price_amount_micros  = item["price_amount_micros"].asInt64();
-                it.price_currency_code  = item["price_currency_code"].asCString();
-                it.title                = item["title"].asCString();
-                it.type                 = item["type"].asCString();
+                it.productId            = getString(item, "productId");
+                it.description          = getString(item, "description");
+                it.price                = getString(item, "price");
+                it.price_amount_micros  = getInt64(item, "price_amount_micros");
+                it.price_currency_code  = getString(item, "price_currency_code");
+                it.title                = getString(item, "title");
+                it.type                 = getString(item, "type");
 #else
 
                 it.productId = item["productId"].asCString();
@@ -123,13 +141,15 @@ namespace oxygine
         {
             void purchased(const std::string& data_, const std::string& sign_)
             {
+                log::messageln("billing::internal::purchased %s %s", data_.c_str(), sign_.c_str());
                 PurchasedEvent ev(data_, sign_);
                 _dispatcher->dispatchEvent(&ev);
             }
 
-            void detailed(const Json::Value& data)
+            void detailed(const std::string& str)
             {
-                DetailsEvent ev(data);
+                log::messageln("billing::internal::detailed %s", str.c_str());
+                DetailsEvent ev(str);
                 _dispatcher->dispatchEvent(&ev);
             }
 

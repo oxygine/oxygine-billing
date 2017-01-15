@@ -47,9 +47,13 @@ extern "C"
             vls.append(v);
         }
 
+
+        Json::FastWriter writer;
+        std::string str = writer.write(vls);
+
         core::getMainThreadDispatcher().postCallback([ = ]()
         {
-            billing::internal::detailed(vls);
+            billing::internal::detailed(str);
         });
     }
 

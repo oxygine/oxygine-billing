@@ -13,7 +13,7 @@ namespace oxygine
         public:
             enum { EVENT = sysEventID('b', 'p', 'r') };
             PurchasedEvent(const std::string& data_, const std::string& signature_) : Event(EVENT), data(data_), signature(signature_) {}
-            
+
             std::string data;
             std::string signature;
         };
@@ -35,9 +35,9 @@ namespace oxygine
         {
         public:
             enum { EVENT = sysEventID('b', 'd', 't') };
-            DetailsEvent(const Json::Value& data_) : Event(EVENT), data(data_) {}
+            DetailsEvent(const std::string& data_) : Event(EVENT), data(data_) {}
 
-            Json::Value data;
+            std::string data;
 
 
             /*
@@ -118,7 +118,7 @@ namespace oxygine
         {
             void purchased(const std::string&, const std::string&);
             //void detailed(const std::string&);
-            void detailed(const Json::Value&);
+            void detailed(const std::string&);
         }
     }
 }
