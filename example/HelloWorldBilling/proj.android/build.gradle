@@ -26,22 +26,26 @@ task build_ndk(type: Exec) {
 }     
 
 android {
-		lintOptions {
-        	abortOnError false
-    	}
+	
+    enforceUniquePackageName=false
+        
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
 
-        compileSdkVersion 23
-  		buildToolsVersion '23.0.2'
 
-         tasks.withType(JavaCompile) {
-                compileTask -> compileTask.dependsOn build_ndk
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['../data']
         }
+    }
 
-  		sourceSets {
-            main {
-                manifest.srcFile 'AndroidManifest.xml'
-                java.srcDirs = ['src']
-                res.srcDirs = ['res']
-            }
-        }
+    aaptOptions {
+        noCompress 'zip', 'ogg'
+        ignoreAssetsPattern "!*.dll:*.icf"
+    }
+
 }
