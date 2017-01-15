@@ -203,7 +203,7 @@ void Test::back(Event* event)
 }
 
 
-void Test::notify(std::string txt, int time)
+void Test::notify(std::string txt, int time, bool autoSize)
 {
     size_t N = 0;
     for (size_t i = 0; i < MAX_NOTIFIES; ++i)
@@ -235,12 +235,30 @@ void Test::notify(std::string txt, int time)
 
     sprite->addTween(tq);
     sprite->attachTo(ui);
-    sprite->setPosition(2.0f, getHeight() - 100.0f - N * sprite->getHeight() * 1.1f);
+    
 
     spTextField text = createText(txt);
     text->attachTo(sprite);
     text->setColor(Color::Black);
-    text->setPosition(sprite->getSize() / 2);
+
+    if (autoSize)
+    {
+        text->setWidth(getStage()->getWidth() / 2);
+        text->setHAlign(TextStyle::HALIGN_LEFT);
+        text->setVAlign(TextStyle::VALIGN_TOP);
+        text->setX(0);
+        text->setMultiline(true);
+        text->setBreakLongWords(true);
+        sprite->setSize(text->getTextRect().getSize());
+
+    }
+    else
+    {
+        text->setPosition(sprite->getSize() / 2);
+    }
+    
+    sprite->setPosition(2.0f, getHeight() - 100.0f - N * sprite->getHeight() * 1.1f);
+    
 }
 
 void Test::notifyDone(Event* ev)

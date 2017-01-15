@@ -63,7 +63,7 @@ public:
     void _toggleClicked(Event* event);
     void back(Event* event);
 
-    void notify(string text, int time = 400);
+    void notify(string text, int time = 400, bool autosize = false);
 
 protected:
     void notifyDone(Event* ev);

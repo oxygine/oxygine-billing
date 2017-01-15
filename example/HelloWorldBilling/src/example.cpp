@@ -74,13 +74,15 @@ void example_init()
 
 	billing::dispatcher()->addEventListener(billing::PurchasedEvent::EVENT, [](Event* e){
 		
-        Test::instance->notify("purchased");
+        //Test::instance->notify("purchased");
 
         billing::PurchasedEvent *ev = safeCast<billing::PurchasedEvent*>(e);
 
         billing::ParsePurchasedData parced(ev);
         lastPurchasedItemToken = parced.purchaseToken;
         Test::instance->updateText("consume", "Consume item: " + parced.productID + ":" + lastPurchasedItemToken);
+
+        Test::instance->notify(ev->data, 10000, true);
 	});
 
 	billing::dispatcher()->addEventListener(billing::DetailsEvent::EVENT, [](Event* e){
@@ -88,17 +90,8 @@ void example_init()
 
         billing::DetailsEvent *ev = safeCast<billing::DetailsEvent*>(e);
         billing::ParsedDetailsData parced(ev);
-        
-        for (size_t i = 0; i < parced.items.size(); ++i)
-        {
-            const billing::ParsedDetailsData::Item &item = parced.items.front();
-            std::string str;
-            str = item.productId + " " + item.price;
 
-            Test::instance->notify(str);
-        }
-        
-
+        Test::instance->notify(ev->data, 10000, true);
 	});
 
 	Test::init();
