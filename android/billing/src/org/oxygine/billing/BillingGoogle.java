@@ -26,11 +26,12 @@ import java.util.Map;
  * Created by Denis on 27.01.14.
  */
 public class BillingGoogle extends Billing {
+
     private static final String TAG = "SDL";
-    static String ORDER_ID = "";
-    String _publicKey;
-    Map<String, ItemData> prices = new HashMap<String, ItemData>();
+
+    Map<String, ItemData> prices = new HashMap<String, ItemData>();    
     IInAppBillingService _service;
+
     ServiceConnection _serviceConn = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
@@ -48,8 +49,7 @@ public class BillingGoogle extends Billing {
         }
     };
 
-    public BillingGoogle(String publicKey) {
-        _publicKey = publicKey;
+    public BillingGoogle() {
     }
 
     @Override
