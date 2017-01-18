@@ -137,7 +137,8 @@ void billingSimulatorInit()
     if (!bf.empty())
     {
         Json::Reader reader;
-        reader.parse((char*)&bf.front(), (char*)&bf.front() + bf.size(), _purchases, false);
+        bool ok = reader.parse((char*)&bf.front(), (char*)&bf.front() + bf.size(), _purchases, false);
+        OX_ASSERT(ok);
     }
 }
 
@@ -146,6 +147,34 @@ void save()
     Json::FastWriter writer;
     string s = writer.write(_purchases);
     file::write(".billing", s.c_str(), s.size());
+}
+
+
+
+string serData(const Json::Value &item)
+{
+    Json::FastWriter writer;
+    string s = writer.write(item);
+    if (s.back() == '\n')
+        s.pop_back();
+
+    int ta = s.find("\"purchaseTime");
+    int tb = s.find(",", ta);
+    string time = s.substr(ta, tb - ta);
+
+    int sa = s.find("\"purchaseState");
+    int sb = s.find(",", sa);
+    string state = s.substr(sa, sb - sa);
+
+    //state, time
+
+    s.erase(ta, tb - ta);//state
+    s.insert(ta, state);//state,state            
+
+    s.erase(sa, sb - sa);//state
+    s.insert(sa, time);//time,state
+
+    return s;
 }
 
 void billingSimulatorPurchase(const string& id, const string& payload)
@@ -193,6 +222,8 @@ void billingSimulatorPurchase(const string& id, const string& payload)
                 Json::Value data(Json::objectValue);
                 data["productId"] = id;
                 data["purchaseState"] = 0;
+                data["purchaseTime"] = getTimeUTCMS();
+
                 char str[255];
                 safe_sprintf(str, "%lld", getTimeUTCMS());
                 data["purchaseToken"] = str;
@@ -205,8 +236,7 @@ void billingSimulatorPurchase(const string& id, const string& payload)
                 _purchases.append(item);
                 save();
 
-                Json::FastWriter writer;
-                billing::internal::purchased(writer.write(data), item["sign"].asCString());
+                billing::internal::purchased(serData(data), item["sign"].asString());
             });
         });
 
@@ -241,9 +271,7 @@ void billingSimulatorGetPurchases()
         for (Json::ArrayIndex i = 0; i < copy.size(); ++i)
         {
             const Json::Value& item = copy[i];
-
-            Json::FastWriter writer;
-            billing::internal::purchased(writer.write(item["data"]), item["sign"].asCString());
+            billing::internal::purchased(serData(item["data"]), item["sign"].asString());
         }
     });
 }
