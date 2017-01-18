@@ -248,7 +248,7 @@ void billingSimulatorGetPurchases()
     });
 }
 
-void billingSimulatorRequestDetails(const vector<string>& items)
+void billingSimulatorRequestDetails(const vector<std::string>& items)
 {
     getStage()->addTween(TweenDummy(), rand() % 1000 + 500)->setDoneCallback([ = ](Event*)
     {
@@ -257,8 +257,8 @@ void billingSimulatorRequestDetails(const vector<string>& items)
         {
             for (size_t n = 0; n < _details.size(); ++n)
             {
-                if (_details[n]["productId"].asString() == items[i])
-                    data.append(_details[i]);
+                if (_details[(int)n]["productId"].asString() == items[i])
+                    data.append(_details[(int)i]);
             }
         }
         Json::FastWriter writer;

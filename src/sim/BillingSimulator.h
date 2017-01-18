@@ -5,8 +5,8 @@
 using namespace std;
 
 void billingSimulatorInit();
-void billingSimulatorPurchase(const string& id, const string& payload);
-void billingSimulatorConsume(const string& token);
+void billingSimulatorPurchase(const std::string& id, const std::string& payload);
+void billingSimulatorConsume(const std::string& token);
 void billingSimulatorGetPurchases();
-void billingSimulatorRequestDetails(const vector<string>& items);
+void billingSimulatorRequestDetails(const vector<std::string>& items);
 void billingSimulatorSetDetails(const Json::Value& details);
