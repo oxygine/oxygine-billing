@@ -15,6 +15,9 @@ namespace oxygine
             PurchasedEvent(const std::string& data_, const std::string& signature_) : Event(EVENT), data(data_), signature(signature_) {}
 
             std::string data;
+
+            //google "signature"
+            //amazon "userId"
             std::string signature;
         };
 
@@ -28,7 +31,11 @@ namespace oxygine
             Json::Value signature;
 
             std::string productID;
+            
+            //google "purchaseToken"
+            //amazon "receiptId"
             std::string purchaseToken;
+
             int         purchaseState;
         };
 
@@ -107,6 +114,8 @@ namespace oxygine
 
         enum MarketType
         {
+            unknown,
+            simulator,
             ios,
             google,
             amazon

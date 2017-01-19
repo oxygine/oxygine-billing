@@ -8,5 +8,6 @@ void jniBillingFree();
 void jniBillingUpdate(const vector<string>& ids);
 void jniBillingPurchase(const string& sku, const string& payload);
 void jniBillingGetPurchases();
+std::string jniBillingGetType();
 void jniBillingConsume(const string& token);
 string jniBillingGetCurrency();

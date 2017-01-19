@@ -36,25 +36,7 @@ class MyPurchasingListener implements PurchasingListener
             "receiptId": "q1YqVrJSSs7P1UsrLSqq1MstKSxNLS5JzE2sys_TS8lMzM3PSzEyyFXSUUoBKjQ0MbSwMDI1MjayMLAEipUCxXKMPXzMIwoKXH0zivzdXfJKiyx1S3PKCvNzi4LTzQor_V28cxMzzM1yvEJtgVpKlKwMagE"
         }
         */
-
-        JSONObject data = new JSONObject();
-        try
-        {
-
-            data.put("productId", receipt.getSku());
-            data.put("orderId", receipt.getReceiptId());
-            data.put("purchaseState", receipt.isCanceled() ? 2:0);
-            data.put("sandbox", PurchasingService.IS_SANDBOX_MODE);
-            //customData.put("micros", 100);
-            //customData.put("currencyCode", "USD");
-            data.put("purchaseToken", receipt.getReceiptId());
-
-        } catch (JSONException exc)
-        {
-            return;
-        }
-
-        Billing.nativeBillingPurchase(data.toString(), currentUserId);
+        Billing.nativeBillingPurchase(receipt.toString(), currentUserId);
     }
 
     @Override

@@ -41,6 +41,24 @@ namespace oxygine
             _dispatcher = 0;
         }
 
+
+        MarketType getMarketType()
+        {
+#ifdef __APPLE__
+            return ios;
+#elif __ANDROID__
+            string tp = jniBillingGetType();
+            if (tp == "google")
+                return google;
+            if (tp == "amazon")
+                return google;
+            return unknown;
+#else
+
+#endif
+            return simulator;
+        }
+
         void purchase(const std::string& id, const std::string& payload)
         {
             log::messageln("billing::purchase '%s', payload '%s'", id.c_str(), payload.c_str());
@@ -114,25 +132,25 @@ namespace oxygine
             Json::Reader reader;
             reader.parse(event->data, data, false);
 
+            MarketType mt = getMarketType();
+
             for (Json::ArrayIndex i = 0; i < data.size(); ++i)
             {
                 const Json::Value& item = data[i];
 
                 Item it;
 
-#if 1//def __ANDROID__
-                it.productId            = getString(item, "productId");
-                it.description          = getString(item, "description");
-                it.price                = getString(item, "price");
-                it.price_amount_micros  = getInt64(item, "price_amount_micros");
-                it.price_currency_code  = getString(item, "price_currency_code");
-                it.title                = getString(item, "title");
-                it.type                 = getString(item, "type");
-#else
+                if (mt == google || mt == simulator || mt == amazon)
+                {
+                    it.productId = getString(item, "productId");
+                    it.description = getString(item, "description");
+                    it.price = getString(item, "price");
+                    it.price_amount_micros = getInt64(item, "price_amount_micros");
+                    it.price_currency_code = getString(item, "price_currency_code");
+                    it.title = getString(item, "title");
+                    it.type = getString(item, "type");
+                }
 
-                it.productId = item["productId"].asCString();
-
-#endif
                 items.push_back(it);
             }
         }
@@ -173,9 +191,19 @@ namespace oxygine
             Json::Reader reader;
             reader.parse(event->data, data, false);
 
-            productID = data["productId"].asCString();
-            purchaseToken = data["purchaseToken"].asCString();
-            purchaseState = data["purchaseState"].asInt();
+            MarketType mt = getMarketType();
+
+            if (mt == google || mt == simulator)
+            { 
+                productID = data["productId"].asString();
+                purchaseToken = data["purchaseToken"].asString();
+                purchaseState = data["purchaseState"].asInt();
+            }
+
+            if (mt == amazon)
+            {
+                purchaseToken = data["receiptId"].asCString();
+            }
         }
     }
 }

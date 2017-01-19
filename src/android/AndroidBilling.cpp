@@ -93,8 +93,9 @@ void jniBillingInit()
     catch (const notFound&)
     {
         log::error("jniBillingInit failed, class/member not found");
-
     }
+
+    log::messageln("jniBillingType %s", jniBillingGetType().c_str());
 }
 
 void jniBillingFree()
@@ -151,6 +152,21 @@ void jniBillingUpdate(const vector<string>& ids)
     {
 
     }
+}
+
+std::string jniBillingGetType()
+{    
+    if (!isBillinEnabled())
+        return "";
+
+    JNIEnv* env = jniGetEnv();
+
+    LOCAL_REF_HOLDER(env);
+
+    jmethodID jfunc = env->GetMethodID(_jBillingClass, "getName", "()Ljava/lang/String;");
+    jstring jstr = (jstring)env->CallObjectMethod(_jBillingObject, jfunc);
+
+    return jniGetString(env, jstr);
 }
 
 void jniBillingConsume(const string& token)
@@ -238,6 +254,7 @@ void jniBillingGetPurchases()
     JNIEnv* env = jniGetEnv();
     _jniGetPurchases(env);
 }
+
 
 void jniBillingPurchase(const string& sku, const string& payload)
 {
