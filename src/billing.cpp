@@ -175,6 +175,7 @@ namespace oxygine
 
             productID = data["productId"].asCString();
             purchaseToken = data["purchaseToken"].asCString();
+            purchaseState = data["purchaseState"].asInt();
         }
     }
 }

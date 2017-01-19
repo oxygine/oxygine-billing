@@ -29,6 +29,7 @@ namespace oxygine
 
             std::string productID;
             std::string purchaseToken;
+            int         purchaseState;
         };
 
         class DetailsEvent : public Event

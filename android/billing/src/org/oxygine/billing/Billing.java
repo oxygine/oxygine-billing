@@ -1,6 +1,8 @@
 package org.oxygine.billing;
 
+import android.content.pm.PackageManager;
 import org.oxygine.lib.extension.ActivityObserver;
+import android.app.Activity;
 
 public abstract class Billing extends ActivityObserver {
     static final public int BILLING_REQUEST_CODE = 1001;
@@ -10,6 +12,7 @@ public abstract class Billing extends ActivityObserver {
     public static native void nativeBillingDetails(String[] items);
 
     public static native void nativeBillingPurchases(String[] items, String[] signatures);
+
     public static void nativeBillingPurchase(String item, String signature)
     {
         String[] pr = new String[1];
@@ -18,6 +21,17 @@ public abstract class Billing extends ActivityObserver {
         String[] sg = new String[1];
         sg[0] = signature;
         nativeBillingPurchases(pr, sg);
+    }
+
+    public static Billing create(Activity act)
+    {
+        PackageManager pm = act.getPackageManager();
+        String installer = pm.getInstallerPackageName(act.getPackageName());
+
+        if (installer == "com.amazon.venezia")
+        	return new BillingAmazon();
+        else        	
+            return new BillingGoogle();
     }
 
 

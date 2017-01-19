@@ -59,6 +59,7 @@ extern "C"
 
     JNIEXPORT void JNICALL Java_org_oxygine_billing_Billing_nativeBillingPurchases(JNIEnv* env, jclass cl, jobjectArray jItems, jobjectArray jSignatures)
     {
+        log::messageln("Java_org_oxygine_billing_Billing_nativeBillingPurchases");
         vector<string> items;
         jniGetStringArray(items, env, jItems);
 
