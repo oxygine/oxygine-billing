@@ -51,7 +51,7 @@ namespace oxygine
             if (tp == "google")
                 return google;
             if (tp == "amazon")
-                return google;
+                return amazon;
             return unknown;
 #else
 
