@@ -203,6 +203,7 @@ namespace oxygine
             if (mt == amazon)
             {
                 purchaseToken = data["receiptId"].asCString();
+                productID = data["sku"].asCString();
             }
         }
     }

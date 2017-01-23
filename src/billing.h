@@ -30,6 +30,8 @@ namespace oxygine
             Json::Value data;
             Json::Value signature;
 
+            //google "productID"
+            //amazon "sku"
             std::string productID;
             
             //google "purchaseToken"
