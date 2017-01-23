@@ -22,6 +22,7 @@ public:
         _txt = new TextField;
         _txt->setText("OK");
         _txt->setAlign(TextStyle::VALIGN_MIDDLE, TextStyle::HALIGN_MIDDLE);
+        _txt->setFont(DebugActor::resSystem->getResFont("system"));
         addChild(_txt);
 
         setColor(Color::Green);
@@ -78,6 +79,7 @@ public:
         _title->setAlign(TextStyle::VALIGN_MIDDLE, TextStyle::HALIGN_MIDDLE);
         _title->setMultiline(true);
         _title->setColor(Color::Black);
+        _title->setFont(DebugActor::resSystem->getResFont("system"));
         addChild(_title);
 
         _btnOk = new Btn();
