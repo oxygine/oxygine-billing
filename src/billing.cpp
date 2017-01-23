@@ -202,8 +202,8 @@ namespace oxygine
 
             if (mt == amazon)
             {
-                purchaseToken = data["receiptId"].asCString();
-                productID = data["sku"].asCString();
+                purchaseToken = data["receiptId"].asString();
+                productID = data["sku"].asString();
             }
         }
     }
