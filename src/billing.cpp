@@ -194,7 +194,7 @@ namespace oxygine
             MarketType mt = getMarketType();
 
             if (mt == google || mt == simulator)
-            { 
+            {
                 productID = data["productId"].asString();
                 purchaseToken = data["purchaseToken"].asString();
                 purchaseState = data["purchaseState"].asInt();

@@ -155,7 +155,7 @@ void jniBillingUpdate(const vector<string>& ids)
 }
 
 std::string jniBillingGetType()
-{    
+{
     if (!isBillinEnabled())
         return "";
 

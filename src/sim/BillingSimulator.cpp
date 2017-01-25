@@ -153,7 +153,7 @@ void save()
 
 
 
-string serData(const Json::Value &item)
+string serData(const Json::Value& item)
 {
     Json::FastWriter writer;
     string s = writer.write(item);
@@ -171,7 +171,7 @@ string serData(const Json::Value &item)
     //state, time
 
     s.erase(ta, tb - ta);//state
-    s.insert(ta, state);//state,state            
+    s.insert(ta, state);//state,state
 
     s.erase(sa, sb - sa);//state
     s.insert(sa, time);//time,state

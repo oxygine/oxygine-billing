@@ -33,7 +33,7 @@ namespace oxygine
             //google "productID"
             //amazon "sku"
             std::string productID;
-            
+
             //google "purchaseToken"
             //amazon "receiptId"
             std::string purchaseToken;
