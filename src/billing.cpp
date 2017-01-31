@@ -45,7 +45,7 @@ namespace oxygine
         MarketType getMarketType()
         {
 #ifdef __APPLE__
-            return ios;
+            return simulator;
 #elif __ANDROID__
             string tp = jniBillingGetType();
             if (tp == "google")
