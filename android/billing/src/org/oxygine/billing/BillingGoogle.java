@@ -95,18 +95,13 @@ public class BillingGoogle extends Billing {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BILLING_REQUEST_CODE) {
-            if (resultCode != Activity.RESULT_OK)
-                return;
-
+            
             int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
-            if (responseCode != 0)
-                return;
 
             String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
             String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
-            if (verify(purchaseData, dataSignature)) {
-                nativeBillingPurchase(purchaseData, dataSignature);
-            }
+            
+            nativeBillingPurchase(Activity.RESULT_OK, responseCode, purchaseData, dataSignature);
         }
     }
 
@@ -150,7 +145,7 @@ public class BillingGoogle extends Billing {
                         ArrayList<String> details = purchases.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
                         ArrayList<String> signatures = purchases.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
 
-                        nativeBillingPurchases(
+                        nativeBillingPurchases(Activity.RESULT_OK, 0,
                                 details.toArray(new String[details.size()]),
                                 signatures.toArray(new String[signatures.size()]));
                     }

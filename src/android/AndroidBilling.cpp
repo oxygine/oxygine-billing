@@ -57,9 +57,9 @@ extern "C"
         });
     }
 
-    JNIEXPORT void JNICALL Java_org_oxygine_billing_Billing_nativeBillingPurchases(JNIEnv* env, jclass cl, jobjectArray jItems, jobjectArray jSignatures)
+    JNIEXPORT void JNICALL Java_org_oxygine_billing_Billing_nativeBillingPurchases(JNIEnv* env, jclass cl, jint requestCode, jint resultCode, jobjectArray jItems, jobjectArray jSignatures)
     {
-        log::messageln("Java_org_oxygine_billing_Billing_nativeBillingPurchases");
+        log::messageln("Java_org_oxygine_billing_Billing_nativeBillingPurchases2");
         vector<string> items;
         jniGetStringArray(items, env, jItems);
 
@@ -70,8 +70,13 @@ extern "C"
 
         core::getMainThreadDispatcher().postCallback([ = ]()
         {
-            for (size_t i = 0; i < items.size(); ++i)
-                billing::internal::purchased(items[i], signatures[i]);
+            if (items.empty())
+                billing::internal::purchased(requestCode, resultCode, "", "");
+            else
+            {
+                for (size_t i = 0; i < items.size(); ++i)
+                    billing::internal::purchased(requestCode, resultCode, items[i], signatures[i]);
+            }
         });
     }
 

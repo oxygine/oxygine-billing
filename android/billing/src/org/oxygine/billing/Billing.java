@@ -7,20 +7,23 @@ import android.app.Activity;
 public abstract class Billing extends ActivityObserver {
     static final public int BILLING_REQUEST_CODE = 1001;
 
-    public static native void nativeBillingPurchased(int responseCode, String data);
-
     public static native void nativeBillingDetails(String[] items);
-
-    public static native void nativeBillingPurchases(String[] items, String[] signatures);
-
-    public static void nativeBillingPurchase(String item, String signature)
+    public static native void nativeBillingPurchases(int requestCode, int resultCode, String[] items, String[] signatures);
+    public static void nativeBillingPurchase(int requestCode, int resultCode, String item, String signature)
     {
-        String[] pr = new String[1];
-        pr[0] = item;
+        String[] pr = null;
+        if (item != null) {
+            pr = new String[1];
+            pr[0] = item;   
+        }
 
-        String[] sg = new String[1];
-        sg[0] = signature;
-        nativeBillingPurchases(pr, sg);
+        String[] sg = null;
+        if (signature != null){
+            sg = new String[1];
+            sg[0] = signature;   
+        }
+
+        nativeBillingPurchases(requestCode, resultCode, pr, sg);
     }
 
     public static Billing create(Activity act)

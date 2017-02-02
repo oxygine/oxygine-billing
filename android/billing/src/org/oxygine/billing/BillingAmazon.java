@@ -36,7 +36,8 @@ class MyPurchasingListener implements PurchasingListener
             "receiptId": "q1YqVrJSSs7P1UsrLSqq1MstKSxNLS5JzE2sys_TS8lMzM3PSzEyyFXSUUoBKjQ0MbSwMDI1MjayMLAEipUCxXKMPXzMIwoKXH0zivzdXfJKiyx1S3PKCvNzi4LTzQor_V28cxMzzM1yvEJtgVpKlKwMagE"
         }
         */
-        Billing.nativeBillingPurchase(receipt.toString(), currentUserId);
+
+        Billing.nativeBillingPurchase(Activity.RESULT_OK, 0, receipt.toString(), currentUserId);
     }
 
     @Override
@@ -64,17 +65,19 @@ class MyPurchasingListener implements PurchasingListener
                 // This is not applicable for consumable item. It is only
                 // application for entitlement and subscription.
                 // check related samples for more details.
+                Billing.nativeBillingPurchase(Activity.RESULT_OK, 7, null, null);
                 break;
             case INVALID_SKU:
                 Log.d(TAG, "onPurchaseResponse: invalid SKU!  onProductDataResponse should have disabled buy button already.");
-                final Set<String> unavailableSkus = new HashSet<String>();
-                unavailableSkus.add(response.getReceipt().getSku());
-                //iapManager.disablePurchaseForSkus(unavailableSkus);
+                Billing.nativeBillingPurchase(Activity.RESULT_OK, 4, null, null);
                 break;
             case FAILED:
+                Billing.nativeBillingPurchase(Activity.RESULT_OK, 1, null, null);
+                break;
             case NOT_SUPPORTED:
                 Log.d(TAG, "onPurchaseResponse: failed so remove purchase request from local storage");
-                //iapManager.purchaseFailed(response.getReceipt().getSku());
+                //Billing.nativeBillingPurchase(Activity.RESULT_OK, 0, receipt.toString(), currentUserId);
+                Billing.nativeBillingPurchase(Activity.RESULT_OK, 2, null, null);
                 break;
         }
     }

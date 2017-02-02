@@ -157,10 +157,30 @@ namespace oxygine
 
         namespace internal
         {
-            void purchased(const std::string& data_, const std::string& sign_)
+            void purchased(int requestCode, int resultCode, const std::string& data_, const std::string& sign_)
             {
-                log::messageln("billing::internal::purchased %s %s", data_.c_str(), sign_.c_str());
-                PurchasedEvent ev(data_, sign_);
+                log::messageln("billing::internal::purchased %d %d %s %s", requestCode, resultCode, data_.c_str(), sign_.c_str());
+
+                int event = PurchasedEvent::EVENT;
+                MarketType mt = getMarketType();
+                if (mt == google || mt == simulator || mt == amazon)
+                {
+                    event = PurchasedEvent::EVENT_ERROR;
+                    if (requestCode == ActivityOK)
+                    {
+                        switch (resultCode)
+                        {
+                        case RC_Canceled:
+                            event = PurchasedEvent::EVENT_CANCELED;
+                            break;
+                        case RC_OK:
+                            event = PurchasedEvent::EVENT;
+                            break;
+                        }
+                    }
+                }
+
+                PurchasedEvent ev(data_, sign_, event);
                 _dispatcher->dispatchEvent(&ev);
             }
 

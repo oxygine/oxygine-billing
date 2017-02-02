@@ -12,7 +12,10 @@ namespace oxygine
         {
         public:
             enum { EVENT = sysEventID('b', 'p', 'r') };
-            PurchasedEvent(const std::string& data_, const std::string& signature_) : Event(EVENT), data(data_), signature(signature_) {}
+            enum { EVENT_CANCELED = sysEventID('b', 'c', 'n') };
+            enum { EVENT_ERROR = sysEventID('b', 'e', 'r') };
+
+            PurchasedEvent(const std::string& data_, const std::string& signature_, eventType event = EVENT) : Event(event), data(data_), signature(signature_) {}
 
             std::string data;
 
@@ -128,7 +131,12 @@ namespace oxygine
 
         namespace internal
         {
-            void purchased(const std::string&, const std::string&);
+            const int ActivityOK = -1;
+
+            const int RC_OK = 0;
+            const int RC_Canceled = 1;
+
+            void purchased(int requestCode, int resultCode, const std::string&, const std::string&);
             //void detailed(const std::string&);
             void detailed(const std::string&);
         }

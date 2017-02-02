@@ -238,12 +238,13 @@ void billingSimulatorPurchase(const string& id, const string& payload)
                 _purchases.append(item);
                 save();
 
-                billing::internal::purchased(serData(data), item["sign"].asString());
+                billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK, serData(data), item["sign"].asString());
             });
         });
 
         d->_btnCancel->addEventListener(TouchEvent::CLICK, [ = ](Event*)
         {
+            billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_Canceled, "", "");
             d->detach();
         });
     }
@@ -273,7 +274,7 @@ void billingSimulatorGetPurchases()
         for (Json::ArrayIndex i = 0; i < copy.size(); ++i)
         {
             const Json::Value& item = copy[i];
-            billing::internal::purchased(serData(item["data"]), item["sign"].asString());
+            billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK, serData(item["data"]), item["sign"].asString());
         }
     });
 }
