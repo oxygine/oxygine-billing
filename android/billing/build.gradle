@@ -24,8 +24,8 @@ android {
         	abortOnError false
     	}
 
-        compileSdkVersion 23
-  		buildToolsVersion '23.0.2'
+        compileSdkVersion rootProject.android.compileSdkVersion
+        buildToolsVersion rootProject.android.buildToolsVersion
 
   		sourceSets {
             main {

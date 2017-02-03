@@ -159,7 +159,7 @@ namespace oxygine
         {
             void purchased(int requestCode, int resultCode, const std::string& data_, const std::string& sign_)
             {
-                log::messageln("billing::internal::purchased %d %d %s %s", requestCode, resultCode, data_.c_str(), sign_.c_str());
+                log::messageln("billing::internal::purchased %d %d <%s> <%s>", requestCode, resultCode, data_.c_str(), sign_.c_str());
 
                 int event = PurchasedEvent::EVENT;
                 MarketType mt = getMarketType();
