@@ -1,10 +1,18 @@
 #include "billing.h"
 
+
+#define IOS_STORE 1
+
+
 #ifdef __ANDROID__
 #include "android/AndroidBilling.h"
+#elif IOS_STORE
+#include "ios/IOSBilling.h"
 #else
 #include "sim/BillingSimulator.h"
 #endif
+
+
 
 namespace oxygine
 {
@@ -25,6 +33,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingInit();
+#elif IOS_STORE
+            iosBillingInit();
 #else
             billingSimulatorInit();
 #endif
@@ -36,6 +46,10 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingFree();
+#elif IOS_STORE
+            iosBillingFree();
+#else
+            billingSimulatorFree();
 #endif
             _dispatcher->removeAllEventListeners();
             _dispatcher = 0;
@@ -44,8 +58,8 @@ namespace oxygine
 
         MarketType getMarketType()
         {
-#ifdef __APPLE__
-            return simulator;
+#ifdef IOS_STORE
+            return ios;
 #elif __ANDROID__
             string tp = jniBillingGetType();
             if (tp == "google")
@@ -65,6 +79,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingPurchase(id, payload);
+#elif IOS_STORE
+            iosBillingPurchase(id);
 #else
             billingSimulatorPurchase(id, payload);
 #endif
@@ -76,6 +92,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingConsume(token);
+#elif IOS_STORE
+            iosBillingConsume(token);
 #else
             billingSimulatorConsume(token);
 #endif
@@ -87,6 +105,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingGetPurchases();
+#elif IOS_STORE
+            iosBillingGetPurchases();
 #else
             billingSimulatorGetPurchases();
 #endif
@@ -98,6 +118,8 @@ namespace oxygine
 
 #ifdef __ANDROID__
             jniBillingUpdate(items);
+#elif IOS_STORE
+            iosBillingUpdate(items);
 #else
             billingSimulatorRequestDetails(items);
 #endif
@@ -106,7 +128,7 @@ namespace oxygine
         void simulatorSetDetails(const Json::Value& details)
         {
 #ifdef __ANDROID__
-
+#elif  IOS_STORE
 #else
             billingSimulatorSetDetails(details);
 #endif
@@ -224,6 +246,12 @@ namespace oxygine
             {
                 purchaseToken = data["receiptId"].asString();
                 productID = data["sku"].asString();
+            }
+            
+            if (mt == ios)
+            {
+                productID = data["productIdentifier"].asString();
+                purchaseToken = data["transactionIdentifier"].asString();
             }
         }
     }
