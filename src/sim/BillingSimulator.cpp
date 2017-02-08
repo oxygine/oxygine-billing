@@ -144,6 +144,11 @@ void billingSimulatorInit()
     }
 }
 
+void billingSimulatorFree()
+{
+
+}
+
 void save()
 {
     Json::FastWriter writer;

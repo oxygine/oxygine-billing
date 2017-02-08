@@ -5,6 +5,7 @@
 using namespace std;
 
 void billingSimulatorInit();
+void billingSimulatorFree();
 void billingSimulatorPurchase(const std::string& id, const std::string& payload);
 void billingSimulatorConsume(const std::string& token);
 void billingSimulatorGetPurchases();

@@ -1,8 +1,9 @@
 #include "billing.h"
 
 
+#if TARGET_OS_IPHONE
 #define IOS_STORE 1
-
+#endif
 
 #ifdef __ANDROID__
 #include "android/AndroidBilling.h"
