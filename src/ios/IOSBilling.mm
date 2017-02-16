@@ -181,6 +181,9 @@ using namespace oxygine;
     NSString *str = [NSString stringWithUTF8String:prod];
     
     SKProduct *product = _products[str];
+    if (!product)
+        return;
+    
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
     payment.quantity = 1;
     //payment.applicationUsername =
