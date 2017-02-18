@@ -18,3 +18,6 @@ example/HelloWorldBilling/proj.android/libs/
 *.db
 *.suo
 *.opendb
+android/billing/oxygine-billing.iml
+example/HelloWorldBilling/data-ram/
+*.dll
