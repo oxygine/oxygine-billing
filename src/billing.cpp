@@ -193,12 +193,12 @@ namespace oxygine
                     {
                         switch (resultCode)
                         {
-                        case RC_Canceled:
-                            event = PurchasedEvent::EVENT_CANCELED;
-                            break;
-                        case RC_OK:
-                            event = PurchasedEvent::EVENT;
-                            break;
+                            case RC_Canceled:
+                                event = PurchasedEvent::EVENT_CANCELED;
+                                break;
+                            case RC_OK:
+                                event = PurchasedEvent::EVENT;
+                                break;
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace oxygine
                 purchaseToken = data["receiptId"].asString();
                 productID = data["sku"].asString();
             }
-            
+
             if (mt == ios)
             {
                 productID = data["productIdentifier"].asString();

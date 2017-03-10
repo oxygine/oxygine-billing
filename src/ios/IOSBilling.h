@@ -15,9 +15,9 @@ using namespace std;
 
 void iosBillingInit();
 void iosBillingFree();
-void iosBillingUpdate(const vector<string> &items);
-void iosBillingPurchase(const string &product);
-void iosBillingConsume(const string &token);
+void iosBillingUpdate(const vector<string>& items);
+void iosBillingPurchase(const string& product);
+void iosBillingConsume(const string& token);
 void iosBillingGetPurchases();
 
 #endif

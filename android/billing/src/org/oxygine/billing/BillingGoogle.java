@@ -96,40 +96,21 @@ public class BillingGoogle extends Billing {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == BILLING_REQUEST_CODE) {
             
-            int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
+            try
+            {
+                int responseCode = data.getIntExtra("RESPONSE_CODE", 0);
 
-            String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
-            String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
+                String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
+                String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
 
-            nativeBillingPurchase(Activity.RESULT_OK, responseCode, purchaseData, dataSignature);
-        }
-    }
-
-    protected String processPaymentData(String data, String signature) {
-        try {
-            JSONObject paymentData = new JSONObject("{}");
-
-            JSONObject object = new JSONObject(data);
-            String sku = object.getString("productId");
-            ItemData item = prices.get(sku);
-            if (item != null) {
-                object.put("price", item.price);
-                object.put("currencyCode", item.curCode);
-                object.put("micros", item.micros);
-                paymentData.put("customData", object);
+                nativeBillingPurchase(Activity.RESULT_OK, responseCode, purchaseData, dataSignature);
+            }  
+            catch (Exception e) {
+                e.printStackTrace();
             }
-
-            paymentData.put("data", data);
-            paymentData.put("signature", signature);
-
-            return paymentData.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-
-        return null;
     }
-
+    
     @Override
     public void getPurchases() {
         new Thread(new Runnable() {
@@ -151,7 +132,7 @@ public class BillingGoogle extends Billing {
                                     signatures.toArray(new String[signatures.size()]));
                         }
                     }
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -213,7 +194,7 @@ public class BillingGoogle extends Billing {
 
                     String[] ar = details.toArray(new String[details.size()]);
                     nativeBillingDetails(ar);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -236,7 +217,7 @@ public class BillingGoogle extends Billing {
                     int response = _service.consumePurchase(3, _activity.getPackageName(), token);
                     if (response == 0) {
                     }
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -263,11 +244,7 @@ public class BillingGoogle extends Billing {
 
                     _activity.startIntentSenderForResult(pendingIntent.getIntentSender(),
                             BILLING_REQUEST_CODE, new Intent(), Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (IntentSender.SendIntentException e) {
-                    e.printStackTrace();
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
