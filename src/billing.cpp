@@ -56,6 +56,10 @@ namespace oxygine
             _dispatcher = 0;
         }
 
+        bool isInitialized()
+        {
+            return _dispatcher != 0;
+        }
 
         MarketType getMarketType()
         {
@@ -186,7 +190,7 @@ namespace oxygine
 
                 int event = PurchasedEvent::EVENT;
                 MarketType mt = getMarketType();
-                if (mt == google || mt == simulator || mt == amazon)
+                if (mt == google || mt == simulator || mt == amazon || mt == ios)
                 {
                     event = PurchasedEvent::EVENT_ERROR;
                     if (requestCode == ActivityOK)
@@ -202,7 +206,7 @@ namespace oxygine
                         }
                     }
                 }
-
+                
                 PurchasedEvent ev(data_, sign_, event);
                 _dispatcher->dispatchEvent(&ev);
             }

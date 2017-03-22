@@ -67,6 +67,9 @@ using namespace oxygine;
     
     return self;
 }
+-(void)free {
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+}
 
 -(void)updateProducts:(NSArray*)items
 {
@@ -81,63 +84,56 @@ using namespace oxygine;
  updatedTransactions:(NSArray *)transactions
 {
     for (SKPaymentTransaction *transaction in transactions) {
-        switch (transaction.transactionState) {
+        
+        const char *trID = transaction.transactionIdentifier ? transaction.transactionIdentifier.UTF8String : "";
+        const char *prodID = transaction.payment.productIdentifier.UTF8String;
+        log::messageln("billing::transation %d '%s' '%s'", transaction.transactionState, trID, prodID);
+        
+        switch (transaction.transactionState)
+        {
                 // Call the appropriate custom method for the transaction state.
             case SKPaymentTransactionStatePurchasing:
-                //[self showTransactionAsInProgress:transaction deferred:NO];
-                log::messageln("billing::transactions SKPaymentTransactionStatePurchasing %s", transaction.transactionIdentifier.UTF8String);
                 break;
                 
             case SKPaymentTransactionStateDeferred:
-                log::messageln("billing::transactions SKPaymentTransactionStateDeferred %s", transaction.transactionIdentifier.UTF8String);
-                //[self showTransactionAsInProgress:transaction deferred:YES];
                 break;
                 
             case SKPaymentTransactionStateFailed:
-                log::messageln("billing::transactions SKPaymentTransactionStateFailed %s", transaction.transactionIdentifier.UTF8String);
-                break;
-                
-            case SKPaymentTransactionStatePurchased: {
-            
-                
-                log::messageln("billing::transactions SKPaymentTransactionStatePurchased %s", transaction.transactionIdentifier.UTF8String);
-                [_transactions setObject:transaction forKey:transaction.transactionIdentifier];
-                //[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-                
-                /*
-                const data::goods *g = [self getGoods:transaction.payment.productIdentifier];
-                SKProduct *product = (__bridge SKProduct*)g->userData;
-                
-                billing::details det;
-                det.orderID = transaction.transactionIdentifier.UTF8String;
-                
-                NSString *currencyCode = [product.priceLocale objectForKey:NSLocaleCurrencyCode];
-                det.currency = currencyCode.UTF8String;
-                det.price = product.price.doubleValue;
-                det.sandbox = true;
-                billing::addCurrency(g, false, &det);
-                 */
-                //[self completeTransaction:transaction];
-                //string data;
-                string sign;
-                
+            {
                 Json::Value data(Json::objectValue);
                 
-                data["transactionIdentifier"] = transaction.transactionIdentifier;
-                data["productIdentifier"] = transaction.payment.productIdentifier;
-                
+                data["transactionIdentifier"] = trID;
+                data["productIdentifier"] = prodID;
+                data["errorCode"] = transaction.error.code;
                 
                 Json::FastWriter writer;
                 
-                billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK, writer.write(data), sign);
+                if (transaction.error.code == SKErrorPaymentCancelled)
+                    billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_Canceled, writer.write(data), "");
+                else
+                    billing::internal::purchased(billing::internal::ActivityOK + 1, 0, writer.write(data), "");
             }
                 break;
-            case SKPaymentTransactionStateRestored:
-                //[self restoreTransaction:transaction];
+                
+            case SKPaymentTransactionStatePurchased:
+            {
+                [_transactions setObject:transaction forKey:transaction.transactionIdentifier];
+                
+                Json::Value data(Json::objectValue);
+                
+                data["transactionIdentifier"] = trID;
+                data["productIdentifier"] = prodID;
+                
+                Json::FastWriter writer;
+                
+                billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK, writer.write(data), "");
+            }
                 break;
+                
+            case SKPaymentTransactionStateRestored:
+                break;
+                
             default:
-                // For debugging
-                NSLog(@"Unexpected transaction state %@", @(transaction.transactionState));
                 break;
         }
     }
@@ -161,11 +157,12 @@ using namespace oxygine;
     
     Json::Value data(Json::arrayValue);
     
+    
     for (SKProduct *product in response.products) {
         [_products setObject:product forKey:product.productIdentifier];
         
-        Json::Value item(Json::ArrayIndex);
-        data.append(item);
+        //Json::Value item(Json::ArrayIndex);
+        //data.append(item);
     }
     
     
@@ -193,7 +190,6 @@ using namespace oxygine;
 
 - (void)consume:(const char *)token
 {
-    
     NSString *str = [NSString stringWithUTF8String:token];
     
     SKPaymentTransaction *trans = _transactions[str];
@@ -212,7 +208,8 @@ void iosBillingInit()
 
 void iosBillingFree()
 {
-    _billing = nil;
+    [_billing free];
+    _billing = 0;
 }
 
 void iosBillingUpdate(const vector<string> &items)

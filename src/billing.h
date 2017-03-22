@@ -107,6 +107,8 @@ namespace oxygine
 
         /**free oxygine-billing module*/
         void free();
+        
+        bool isInitialized();
 
 
         void purchase(const std::string& id, const std::string& payload);
