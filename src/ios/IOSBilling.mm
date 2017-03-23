@@ -104,7 +104,7 @@ using namespace oxygine;
                 
                 data["transactionIdentifier"] = trID;
                 data["productIdentifier"] = prodID;
-                data["errorCode"] = transaction.error.code;
+                data["errorCode"] = (int)transaction.error.code;
                 
                 Json::FastWriter writer;
                 
