@@ -153,7 +153,7 @@ void save()
 {
     Json::FastWriter writer;
     string s = writer.write(_purchases);
-    file::write(".billing", s.c_str(), s.size());
+    file::write(".billing", s.c_str(), (int)s.size());
 }
 
 
@@ -165,12 +165,12 @@ string serData(const Json::Value& item)
     if (s.back() == '\n')
         s.pop_back();
 
-    int ta = s.find("\"purchaseTime");
-    int tb = s.find(",", ta);
+    int ta = (int)s.find("\"purchaseTime");
+    int tb = (int)s.find(",", ta);
     string time = s.substr(ta, tb - ta);
 
-    int sa = s.find("\"purchaseState");
-    int sb = s.find(",", sa);
+    int sa = (int)s.find("\"purchaseState");
+    int sb = (int)s.find(",", sa);
     string state = s.substr(sa, sb - sa);
 
     //state, time
