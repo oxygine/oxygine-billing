@@ -45,6 +45,9 @@ namespace oxygine
         {
             log::messageln("billing::free");
 
+            if (!_dispatcher)
+                return;
+
 #ifdef __ANDROID__
             jniBillingFree();
 #elif IOS_STORE
@@ -206,7 +209,7 @@ namespace oxygine
                         }
                     }
                 }
-                
+
                 PurchasedEvent ev(data_, sign_, event);
                 _dispatcher->dispatchEvent(&ev);
             }

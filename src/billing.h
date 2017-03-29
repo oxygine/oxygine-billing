@@ -107,7 +107,7 @@ namespace oxygine
 
         /**free oxygine-billing module*/
         void free();
-        
+
         bool isInitialized();
 
 
