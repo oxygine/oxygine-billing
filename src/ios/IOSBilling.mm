@@ -124,6 +124,10 @@ using namespace oxygine;
                 data["transactionIdentifier"] = trID;
                 data["productIdentifier"] = prodID;
                 
+                NSString* str = [[NSString alloc] initWithData:transaction.transactionReceipt encoding:NSUTF8StringEncoding];
+                string s = [str UTF8String];
+                data["transactionReceipt"] = s;
+                
                 Json::FastWriter writer;
                 
                 billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK, writer.write(data), "");
@@ -193,6 +197,9 @@ using namespace oxygine;
     NSString *str = [NSString stringWithUTF8String:token];
     
     SKPaymentTransaction *trans = _transactions[str];
+    if (!trans)
+        return;
+    
     [[SKPaymentQueue defaultQueue] finishTransaction:trans];
 }
 

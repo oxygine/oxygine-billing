@@ -39,7 +39,10 @@ namespace oxygine
 
             //google "purchaseToken"
             //amazon "receiptId"
+            //ios    "transactionIdentifier"
             std::string purchaseToken;
+            
+            std::string iosTransactionReceipt;
 
             int         purchaseState;
         };
