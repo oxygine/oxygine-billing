@@ -117,7 +117,11 @@ namespace oxygine
         void purchase(const std::string& id, const std::string& payload);
         void consume(const std::string& token);
 
+        /**requestPurchases should be called right after billing::init() or when you are ready to receive purchased
+        ios purchases wont work without this;
+        */
         void requestPurchases();
+        
         void requestDetails(const std::vector<std::string>& items);
 
         void simulatorSetDetails(const Json::Value& details);

@@ -20,56 +20,28 @@ using namespace oxygine;
     //NSArray *_products;
     NSMutableDictionary *_products;
     NSMutableDictionary *_transactions;
-    
 }
+
+
 @end
 
 @implementation Billing
 
-#import <CommonCrypto/CommonCrypto.h>
-
-// Custom method to calculate the SHA-256 hash using Common Crypto
-- (NSString *)hashedValueForAccountName:(NSString*)userAccountName
-{
-    const int HASH_SIZE = 32;
-    unsigned char hashedChars[HASH_SIZE];
-    const char *accountName = [userAccountName UTF8String];
-    size_t accountNameLen = strlen(accountName);
-    
-    // Confirm that the length of the user name is small enough
-    // to be recast when calling the hash function.
-    if (accountNameLen > UINT32_MAX) {
-        NSLog(@"Account name too long to hash: %@", userAccountName);
-        return nil;
-    }
-    CC_SHA256(accountName, (CC_LONG)accountNameLen, hashedChars);
-    
-    // Convert the array of bytes into a string showing its hex representation.
-    NSMutableString *userAccountHash = [[NSMutableString alloc] init];
-    for (int i = 0; i < HASH_SIZE; i++) {
-        // Add a dash every four bytes, for readability.
-        if (i != 0 && i%4 == 0) {
-            [userAccountHash appendString:@"-"];
-        }
-        [userAccountHash appendFormat:@"%02x", hashedChars[i]];
-    }
-    
-    return userAccountHash;
-}
 
 -(id)init {
     self = [super init];
     
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     
     _products = [NSMutableDictionary dictionary];
     _transactions = [NSMutableDictionary dictionary];
     
     return self;
 }
+
 -(void)free {
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
+
 
 -(void)updateProducts:(NSArray*)items
 {
@@ -78,6 +50,7 @@ using namespace oxygine;
     productsRequest.delegate = self;
     [productsRequest start];
 }
+
 
 
 - (void)paymentQueue:(SKPaymentQueue *)queue
@@ -100,6 +73,8 @@ using namespace oxygine;
                 
             case SKPaymentTransactionStateFailed:
             {
+                [queue finishTransaction:transaction];
+                
                 Json::Value data(Json::objectValue);
                 
                 data["transactionIdentifier"] = trID;
@@ -144,6 +119,20 @@ using namespace oxygine;
 }
 
 
+
+- (void)restore {
+    
+    NSArray *all = [_transactions allValues];
+    NSArray *purchased = [all filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
+        return ((SKPaymentTransaction*)object).transactionState == SKPaymentTransactionStatePurchased;
+    }]];
+    
+    [self paymentQueue:[SKPaymentQueue defaultQueue]  updatedTransactions: purchased];
+    
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+    
+}
 
 - (void)productsRequest:(SKProductsRequest *)request
      didReceiveResponse:(SKProductsResponse *)response
@@ -201,6 +190,7 @@ using namespace oxygine;
         return;
     
     [[SKPaymentQueue defaultQueue] finishTransaction:trans];
+    [_transactions removeObjectForKey:trans.transactionIdentifier];
 }
 
 @end
@@ -246,4 +236,5 @@ void iosBillingConsume(const string &token)
 
 void iosBillingGetPurchases()
 {
+    [_billing restore];
 }
