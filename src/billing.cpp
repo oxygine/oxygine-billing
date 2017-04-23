@@ -260,7 +260,7 @@ namespace oxygine
             {
                 productID = data["productIdentifier"].asString();
                 iosTransactionReceipt = data["transactionReceipt"].asString();
-                
+
                 purchaseToken = data["transactionIdentifier"].asString();
             }
         }

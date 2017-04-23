@@ -41,7 +41,7 @@ namespace oxygine
             //amazon "receiptId"
             //ios    "transactionIdentifier"
             std::string purchaseToken;
-            
+
             std::string iosTransactionReceipt;
 
             int         purchaseState;
@@ -121,7 +121,7 @@ namespace oxygine
         ios purchases wont work without this;
         */
         void requestPurchases();
-        
+
         void requestDetails(const std::vector<std::string>& items);
 
         void simulatorSetDetails(const Json::Value& details);
