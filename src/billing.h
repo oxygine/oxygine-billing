@@ -1,7 +1,7 @@
 #pragma once
-#include "EventDispatcher.h"
-#include "Event.h"
-#include "json/json.h"
+#include "oxygine/EventDispatcher.h"
+#include "oxygine/Event.h"
+#include "oxygine/json/json.h"
 #include <string>
 
 namespace oxygine
