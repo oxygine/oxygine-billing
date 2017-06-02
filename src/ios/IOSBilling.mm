@@ -165,12 +165,16 @@ using namespace oxygine;
     billing::internal::detailed(writer.write(data));
 }
 
+- (SKProduct*) getProduct:(const char *)name
+{
+    NSString *str = [NSString stringWithUTF8String:name];
+    
+    return _products[str];
+}
+
 - (void)purchase:(const char *)prod
 {
-    
-    NSString *str = [NSString stringWithUTF8String:prod];
-    
-    SKProduct *product = _products[str];
+    SKProduct *product = [self getProduct:prod];
     if (!product)
         return;
     
@@ -237,4 +241,9 @@ void iosBillingConsume(const string &token)
 void iosBillingGetPurchases()
 {
     [_billing restore];
+}
+
+bool iosBillingHasProduct(const string &product)
+{
+    return [_billing getProduct:product.c_str()] != 0;
 }
