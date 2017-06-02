@@ -211,14 +211,16 @@ namespace oxygine
                 }
 
                 PurchasedEvent ev(data_, sign_, event);
-                _dispatcher->dispatchEvent(&ev);
+                if (_dispatcher)
+                    _dispatcher->dispatchEvent(&ev);
             }
 
             void detailed(const std::string& str)
             {
                 log::messageln("billing::internal::detailed %s", str.c_str());
                 DetailsEvent ev(str);
-                _dispatcher->dispatchEvent(&ev);
+                if (_dispatcher)
+                    _dispatcher->dispatchEvent(&ev);
             }
 
             /*
