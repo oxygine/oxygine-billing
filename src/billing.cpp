@@ -257,6 +257,7 @@ namespace oxygine
             {
                 purchaseToken = data["receiptId"].asString();
                 productID = data["sku"].asString();
+                payload = event->data3;
             }
 
             if (mt == ios)

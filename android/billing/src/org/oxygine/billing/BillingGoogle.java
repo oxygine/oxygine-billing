@@ -103,7 +103,7 @@ public class BillingGoogle extends Billing {
                 String purchaseData = data.getStringExtra("INAPP_PURCHASE_DATA");
                 String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
 
-                nativeBillingPurchase(Activity.RESULT_OK, responseCode, purchaseData, dataSignature);
+                nativeBillingPurchase(Activity.RESULT_OK, responseCode, purchaseData, dataSignature, "");
             }  
             catch (Exception e) {
                 e.printStackTrace();
@@ -127,9 +127,11 @@ public class BillingGoogle extends Billing {
                         ArrayList<String> signatures = purchases.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
 
                         if (!details.isEmpty()) {
+                            int num = details.size();
                             nativeBillingPurchases(Activity.RESULT_OK, 0,
-                                    details.toArray(new String[details.size()]),
-                                    signatures.toArray(new String[signatures.size()]));
+                                    details.toArray(new String[num]),
+                                    signatures.toArray(new String[num]),
+                                    new String[num]);
                         }
                     }
                 } catch (Exception e) {

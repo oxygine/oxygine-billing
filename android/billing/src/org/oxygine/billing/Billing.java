@@ -8,8 +8,14 @@ public abstract class Billing extends ActivityObserver {
     static final public int BILLING_REQUEST_CODE = 1001;
 
     public static native void nativeBillingDetails(String[] items);
-    public static native void nativeBillingPurchases(int requestCode, int resultCode, String[] items, String[] signatures);
-    public static void nativeBillingPurchase(int requestCode, int resultCode, String item, String signature)
+    public static native void nativeBillingPurchases(int requestCode, int resultCode, String[] items, String[] signatures, String[] payloads);
+
+    public static void nativeBillingStatus(int requestCode, int resultCode)
+    {
+        nativeBillingPurchases(requestCode, resultCode, null, null, null);
+    }
+
+    public static void nativeBillingPurchase(int requestCode, int resultCode, String item, String signature, String payloads)
     {
         String[] pr = null;
         if (item != null) {
@@ -23,7 +29,13 @@ public abstract class Billing extends ActivityObserver {
             sg[0] = signature;   
         }
 
-        nativeBillingPurchases(requestCode, resultCode, pr, sg);
+        String[] pl = null;
+        if (payloads != null){
+            pl = new String[1];
+            pl[0] = payloads;
+        }
+
+        nativeBillingPurchases(requestCode, resultCode, pr, sg, pl);
     }
 
     public static Billing create(Activity act)
