@@ -88,7 +88,7 @@ namespace oxygine
 #ifdef __ANDROID__
             jniBillingPurchase(id, payload);
 #elif IOS_STORE
-            iosBillingPurchase(id);
+            iosBillingPurchase(id, payload);
 #else
             billingSimulatorPurchase(id, payload);
 #endif
@@ -187,9 +187,9 @@ namespace oxygine
 
         namespace internal
         {
-            void purchased(int requestCode, int resultCode, const std::string& data_, const std::string& sign_)
+            void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3)
             {
-                log::messageln("billing::internal::purchased %d %d <%s> <%s>", requestCode, resultCode, data_.c_str(), sign_.c_str());
+                log::messageln("billing::internal::purchased %d %d <%s> <%s> <%s>", requestCode, resultCode, data1.c_str(), data2.c_str(), data3.c_str());
 
                 int event = PurchasedEvent::EVENT;
                 MarketType mt = getMarketType();
@@ -210,7 +210,7 @@ namespace oxygine
                     }
                 }
 
-                PurchasedEvent ev(data_, sign_, event);
+                PurchasedEvent ev(data1, data2, data3);
                 if (_dispatcher)
                     _dispatcher->dispatchEvent(&ev);
             }
@@ -241,7 +241,7 @@ namespace oxygine
         ParsePurchasedData::ParsePurchasedData(const PurchasedEvent* event)
         {
             Json::Reader reader;
-            reader.parse(event->data, data, false);
+            reader.parse(event->data1, data, false);
 
             MarketType mt = getMarketType();
 
@@ -250,6 +250,7 @@ namespace oxygine
                 productID = data["productId"].asString();
                 purchaseToken = data["purchaseToken"].asString();
                 purchaseState = data["purchaseState"].asInt();
+                payload = data["developerPayload"].asString();
             }
 
             if (mt == amazon)
@@ -264,6 +265,7 @@ namespace oxygine
                 iosTransactionReceipt = data["transactionReceipt"].asString();
 
                 purchaseToken = data["transactionIdentifier"].asString();
+                payload = event->data3;
             }
         }
     }
