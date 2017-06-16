@@ -22,7 +22,7 @@ namespace oxygine
             //google "signature"
             //amazon "userId"
             std::string data2;
-            
+
             //ios username
             std::string data3;
         };
@@ -48,7 +48,7 @@ namespace oxygine
             std::string iosTransactionReceipt;
 
             int         purchaseState;
-            
+
             std::string payload;
         };
 
@@ -150,7 +150,7 @@ namespace oxygine
             const int RC_OK = 0;
             const int RC_Canceled = 1;
 
-            void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string &data3);
+            void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3);
             //void detailed(const std::string&);
             void detailed(const std::string&);
         }

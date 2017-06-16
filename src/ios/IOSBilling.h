@@ -20,5 +20,5 @@ void iosBillingPurchase(const string& product, const string& payload);
 void iosBillingConsume(const string& token);
 void iosBillingGetPurchases();
 
-bool iosBillingHasProduct(const string &);
+bool iosBillingHasProduct(const string&);
 #endif
