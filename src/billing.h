@@ -15,13 +15,16 @@ namespace oxygine
             enum { EVENT_CANCELED = sysEventID('b', 'c', 'n') };
             enum { EVENT_ERROR = sysEventID('b', 'e', 'r') };
 
-            PurchasedEvent(const std::string& data_, const std::string& signature_, eventType event = EVENT) : Event(event), data(data_), signature(signature_) {}
+            PurchasedEvent(const std::string& Data1, const std::string& Data2, const std::string& Data3, eventType event = EVENT) : Event(event), data1(Data1), data2(Data2), data3(Data3) {}
 
-            std::string data;
+            std::string data1;
 
             //google "signature"
             //amazon "userId"
-            std::string signature;
+            std::string data2;
+
+            //ios username
+            std::string data3;
         };
 
         class ParsePurchasedData
@@ -45,6 +48,8 @@ namespace oxygine
             std::string iosTransactionReceipt;
 
             int         purchaseState;
+
+            std::string payload;
         };
 
         class DetailsEvent : public Event
@@ -145,7 +150,7 @@ namespace oxygine
             const int RC_OK = 0;
             const int RC_Canceled = 1;
 
-            void purchased(int requestCode, int resultCode, const std::string&, const std::string&);
+            void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3);
             //void detailed(const std::string&);
             void detailed(const std::string&);
         }

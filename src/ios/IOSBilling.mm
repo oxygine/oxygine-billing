@@ -84,9 +84,9 @@ using namespace oxygine;
                 Json::FastWriter writer;
                 
                 if (transaction.error.code == SKErrorPaymentCancelled)
-                    billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_Canceled, writer.write(data), "");
+                    billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_Canceled, writer.write(data), "", "");
                 else
-                    billing::internal::purchased(billing::internal::ActivityOK + 1, 0, writer.write(data), "");
+                    billing::internal::purchased(billing::internal::ActivityOK + 1, 0, writer.write(data), "", "");
             }
                 break;
                 
@@ -105,7 +105,11 @@ using namespace oxygine;
                 
                 Json::FastWriter writer;
                 
-                billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK, writer.write(data), "");
+                NSString *userData = transaction.payment.applicationUsername;
+                
+                
+                billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_OK,
+                                             writer.write(data), "", userData ? [userData UTF8String] : "");
             }
                 break;
                 
@@ -165,18 +169,23 @@ using namespace oxygine;
     billing::internal::detailed(writer.write(data));
 }
 
-- (void)purchase:(const char *)prod
+- (SKProduct*) getProduct:(const char *)name
 {
+    NSString *str = [NSString stringWithUTF8String:name];
     
-    NSString *str = [NSString stringWithUTF8String:prod];
-    
-    SKProduct *product = _products[str];
+    return _products[str];
+}
+
+- (void)purchase:(const char *)prod
+                :(const char*)payload
+{
+    SKProduct *product = [self getProduct:prod];
     if (!product)
         return;
     
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
     payment.quantity = 1;
-    //payment.applicationUsername =
+    payment.applicationUsername = [NSString stringWithUTF8String:payload];
     
     [[SKPaymentQueue defaultQueue] addPayment:payment];
 }
@@ -224,9 +233,9 @@ void iosBillingUpdate(const vector<string> &items)
     [_billing updateProducts:array];
 }
 
-void iosBillingPurchase(const string &product)
+void iosBillingPurchase(const string &product, const string& payload)
 {
-    [_billing purchase: product.c_str()];
+    [_billing purchase: product.c_str() : payload.c_str()];
 }
 
 void iosBillingConsume(const string &token)
@@ -237,4 +246,9 @@ void iosBillingConsume(const string &token)
 void iosBillingGetPurchases()
 {
     [_billing restore];
+}
+
+bool iosBillingHasProduct(const string &product)
+{
+    return [_billing getProduct:product.c_str()] != 0;
 }

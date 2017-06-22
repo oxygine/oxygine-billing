@@ -4,6 +4,7 @@ package org.oxygine.billing;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import com.amazon.device.iap.PurchasingListener;
 import com.amazon.device.iap.PurchasingService;
@@ -15,7 +16,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-
+class Payloads
+{
+    public static SharedPreferences data;
+}
 
 class MyPurchasingListener implements PurchasingListener
 {
@@ -24,9 +28,9 @@ class MyPurchasingListener implements PurchasingListener
     private String currentUserId = null;
     private String currentMarketplace = null;
 
-    
 
-    public void handleReceipt(Receipt receipt)
+
+    public void handleReceipt(Receipt receipt, RequestId rq)
     {
         /*
         {
@@ -37,7 +41,13 @@ class MyPurchasingListener implements PurchasingListener
         }
         */
 
-        Billing.nativeBillingPurchase(Activity.RESULT_OK, 0, receipt.toString(), currentUserId);
+        String payload = Payloads.data.getString(rq.toString(), "");
+        if (payload.isEmpty()) {
+            //try to restore payload by Sku
+            payload = Payloads.data.getString(receipt.getSku(), "");
+        }
+
+        Billing.nativeBillingPurchase(Activity.RESULT_OK, 0, receipt.toString(), currentUserId, payload);
     }
 
     @Override
@@ -58,26 +68,25 @@ class MyPurchasingListener implements PurchasingListener
                 final Receipt receipt = response.getReceipt();
                 //iapManager.setAmazonUserId(response.getUserData().getUserId(), response.getUserData().getMarketplace());
                 Log.d(TAG, "onPurchaseResponse: receipt json:" + receipt.toJSON());
-                handleReceipt(receipt);
+                handleReceipt(receipt, response.getRequestId());
                 break;
             case ALREADY_PURCHASED:
                 Log.d(TAG, "onPurchaseResponse: already purchased, should never get here for a consumable.");
                 // This is not applicable for consumable item. It is only
                 // application for entitlement and subscription.
                 // check related samples for more details.
-                Billing.nativeBillingPurchase(Activity.RESULT_OK, 7, null, null);
+                Billing.nativeBillingStatus(Activity.RESULT_OK, 7);
                 break;
             case INVALID_SKU:
                 Log.d(TAG, "onPurchaseResponse: invalid SKU!  onProductDataResponse should have disabled buy button already.");
-                Billing.nativeBillingPurchase(Activity.RESULT_OK, 4, null, null);
+                Billing.nativeBillingStatus(Activity.RESULT_OK, 4);
                 break;
             case FAILED:
-                Billing.nativeBillingPurchase(Activity.RESULT_OK, 1, null, null);
+                Billing.nativeBillingStatus(Activity.RESULT_OK, 1);
                 break;
             case NOT_SUPPORTED:
                 Log.d(TAG, "onPurchaseResponse: failed so remove purchase request from local storage");
-                //Billing.nativeBillingPurchase(Activity.RESULT_OK, 0, receipt.toString(), currentUserId);
-                Billing.nativeBillingPurchase(Activity.RESULT_OK, 2, null, null);
+                Billing.nativeBillingStatus(Activity.RESULT_OK, 2);
                 break;
         }
     }
@@ -161,7 +170,7 @@ class MyPurchasingListener implements PurchasingListener
             case SUCCESSFUL:
                 //iapManager.setAmazonUserId(response.getUserData().getUserId(), response.getUserData().getMarketplace());
                 for (final Receipt receipt : response.getReceipts()) {
-                    handleReceipt(receipt);
+                    handleReceipt(receipt, response.getRequestId());
                 }
                 if (response.hasMore()) {
                     PurchasingService.getPurchaseUpdates(false);
@@ -204,6 +213,8 @@ public class BillingAmazon extends Billing
     @Override
     public void onCreate()
     {
+        Payloads.data = _activity.getSharedPreferences("OxAmazonPayloads", Context.MODE_PRIVATE);
+
         _listener = new MyPurchasingListener();
         PurchasingService.registerListener(_activity.getApplicationContext(), _listener);
 
@@ -256,7 +267,14 @@ public class BillingAmazon extends Billing
     @Override
     public void purchase(String sku, String payload)
     {
-        PurchasingService.purchase(sku);
+        RequestId r = PurchasingService.purchase(sku);
+
+        Log.i(TAG, "amazon purchase :" + r.toString() + " " + payload);
+
+        SharedPreferences.Editor editor = Payloads.data.edit();
+        editor.putString(r.toString(), payload);
+        editor.putString(sku, payload);//in case of crash
+        editor.commit();
     }
 
     @Override
