@@ -191,7 +191,7 @@ namespace oxygine
             {
                 log::messageln("billing::internal::purchased %d %d <%s> <%s> <%s>", requestCode, resultCode, data1.c_str(), data2.c_str(), data3.c_str());
 
-                int event = PurchasedEvent::EVENT;
+                int event = PurchasedEvent::EVENT_SUCCESS;
                 MarketType mt = getMarketType();
                 if (mt == google || mt == simulator || mt == amazon || mt == ios)
                 {
@@ -204,13 +204,13 @@ namespace oxygine
                                 event = PurchasedEvent::EVENT_CANCELED;
                                 break;
                             case RC_OK:
-                                event = PurchasedEvent::EVENT;
+                                event = PurchasedEvent::EVENT_SUCCESS;
                                 break;
                         }
                     }
                 }
 
-                PurchasedEvent ev(data1, data2, data3);
+                PurchasedEvent ev(data1, data2, data3, event);
                 if (_dispatcher)
                     _dispatcher->dispatchEvent(&ev);
             }

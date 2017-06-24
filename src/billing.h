@@ -11,11 +11,11 @@ namespace oxygine
         class PurchasedEvent : public Event
         {
         public:
-            enum { EVENT = sysEventID('b', 'p', 'r') };
+            enum { EVENT_SUCCESS = sysEventID('b', 'p', 'r') };
             enum { EVENT_CANCELED = sysEventID('b', 'c', 'n') };
             enum { EVENT_ERROR = sysEventID('b', 'e', 'r') };
 
-            PurchasedEvent(const std::string& Data1, const std::string& Data2, const std::string& Data3, eventType event = EVENT) : Event(event), data1(Data1), data2(Data2), data3(Data3) {}
+            PurchasedEvent(const std::string& Data1, const std::string& Data2, const std::string& Data3, eventType event) : Event(event), data1(Data1), data2(Data2), data3(Data3) {}
 
             std::string data1;
 
