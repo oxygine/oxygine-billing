@@ -145,6 +145,20 @@ namespace oxygine
 
         namespace internal
         {
+            typedef void(*cbInit)();
+            typedef void(*cbFree)();
+            typedef void(*cbPurchase)(const std::string &id, const std::string &payload);
+            typedef void(*cbConsume)(const std::string& );
+            typedef void(*cbRequestPurchases)();
+            typedef void(*cbRequestDetails)(const std::vector<std::string>& items);
+
+            extern cbInit                       fInit;
+            extern cbFree                       fFree;
+            extern cbPurchase                   fPurchase;
+            extern cbConsume                    fConsume;
+            extern cbRequestPurchases           fRequestPurchases;
+            extern cbRequestDetails             fRequestDetails;
+
             const int ActivityOK = -1;
 
             const int RC_OK = 0;

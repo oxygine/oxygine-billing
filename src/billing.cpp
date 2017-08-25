@@ -19,6 +19,19 @@ namespace oxygine
 {
     namespace billing
     {
+
+        namespace internal 
+        {
+            cbInit                       fInit = []() {};
+            cbFree                       fFree = []() {};
+            cbPurchase                   fPurchase = [](const string &, const string &) {};
+            cbConsume                    fConsume = [](const string &) {};
+            cbRequestPurchases           fRequestPurchases = []() {};
+            cbRequestDetails             fRequestDetails = [](const std::vector<std::string>& items) {};
+        }
+
+        using namespace internal;
+
         spEventDispatcher _dispatcher;
         spEventDispatcher dispatcher()
         {
@@ -26,19 +39,39 @@ namespace oxygine
         }
 
         void init()
-        {
-            log::messageln("billing::init");
-            OX_ASSERT(!_dispatcher);
-
-            _dispatcher = new EventDispatcher;
+        {            
 
 #ifdef __ANDROID__
-            jniBillingInit();
+            fInit = jniBillingInit;
+            fFree = jniBillingFree;
+            fPurchase = jniBillingPurchase;
+            fConsume = jniBillingConsume;
+            fRequestPurchases = jniBillingGetPurchases;
+            fRequestDetails = jniBillingUpdate;
 #elif IOS_STORE
-            iosBillingInit();
+            fInit = iosBillingInit;
+            fFree = iosBillingFree;
+            fPurchase = iosBillingPurchase;
+            fConsume = iosBillingConsume;
+            fRequestPurchases = iosBillingGetPurchases;
+            fRequestDetails = iosBillingUpdate;
 #else
-            billingSimulatorInit();
+            fInit = billingSimulatorInit;
+            fFree = billingSimulatorFree;
+            fPurchase = billingSimulatorPurchase;
+            fConsume = billingSimulatorConsume;
+            fRequestPurchases = billingSimulatorGetPurchases;
+            fRequestDetails = billingSimulatorRequestDetails;
 #endif
+            
+
+            log::messageln("billing::init");
+            OX_ASSERT(_dispatcher == 0);
+            _dispatcher = new EventDispatcher;
+
+            fInit();
+
+            log::messageln("billing::init done");
         }
 
         void free()
@@ -48,15 +81,12 @@ namespace oxygine
             if (!_dispatcher)
                 return;
 
-#ifdef __ANDROID__
-            jniBillingFree();
-#elif IOS_STORE
-            iosBillingFree();
-#else
-            billingSimulatorFree();
-#endif
+            fFree();
+
             _dispatcher->removeAllEventListeners();
             _dispatcher = 0;
+
+            log::messageln("billing::free done");
         }
 
         bool isInitialized()
@@ -85,52 +115,28 @@ namespace oxygine
         {
             log::messageln("billing::purchase '%s', payload '%s'", id.c_str(), payload.c_str());
 
-#ifdef __ANDROID__
-            jniBillingPurchase(id, payload);
-#elif IOS_STORE
-            iosBillingPurchase(id, payload);
-#else
-            billingSimulatorPurchase(id, payload);
-#endif
+            fPurchase(id, payload);
         }
 
         void consume(const std::string& token)
         {
             log::messageln("billing::consume");
-
-#ifdef __ANDROID__
-            jniBillingConsume(token);
-#elif IOS_STORE
-            iosBillingConsume(token);
-#else
-            billingSimulatorConsume(token);
-#endif
+            fConsume(token);
+            log::messageln("billing::consume done");
         }
 
         void requestPurchases()
         {
             log::messageln("billing::requestPurchases");
-
-#ifdef __ANDROID__
-            jniBillingGetPurchases();
-#elif IOS_STORE
-            iosBillingGetPurchases();
-#else
-            billingSimulatorGetPurchases();
-#endif
+            fRequestPurchases();
+            log::messageln("billing::requestPurchases done");
         }
 
         void requestDetails(const std::vector<std::string>& items)
         {
             log::messageln("billing::requestDetails");
-
-#ifdef __ANDROID__
-            jniBillingUpdate(items);
-#elif IOS_STORE
-            iosBillingUpdate(items);
-#else
-            billingSimulatorRequestDetails(items);
-#endif
+            fRequestDetails(items);
+            log::messageln("billing::requestDetails done");
         }
 
         void simulatorSetDetails(const Json::Value& details)
