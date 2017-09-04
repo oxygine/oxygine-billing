@@ -20,12 +20,12 @@ namespace oxygine
     namespace billing
     {
 
-        namespace internal 
+        namespace internal
         {
             cbInit                       fInit = []() {};
             cbFree                       fFree = []() {};
-            cbPurchase                   fPurchase = [](const string &, const string &) {};
-            cbConsume                    fConsume = [](const string &) {};
+            cbPurchase                   fPurchase = [](const string&, const string&) {};
+            cbConsume                    fConsume = [](const string&) {};
             cbRequestPurchases           fRequestPurchases = []() {};
             cbRequestDetails             fRequestDetails = [](const std::vector<std::string>& items) {};
         }
@@ -39,7 +39,7 @@ namespace oxygine
         }
 
         void init()
-        {            
+        {
 
 #ifdef __ANDROID__
             fInit = jniBillingInit;
@@ -63,7 +63,7 @@ namespace oxygine
             fRequestPurchases = billingSimulatorGetPurchases;
             fRequestDetails = billingSimulatorRequestDetails;
 #endif
-            
+
 
             log::messageln("billing::init");
             OX_ASSERT(_dispatcher == 0);

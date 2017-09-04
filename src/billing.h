@@ -147,8 +147,8 @@ namespace oxygine
         {
             typedef void(*cbInit)();
             typedef void(*cbFree)();
-            typedef void(*cbPurchase)(const std::string &id, const std::string &payload);
-            typedef void(*cbConsume)(const std::string& );
+            typedef void(*cbPurchase)(const std::string& id, const std::string& payload);
+            typedef void(*cbConsume)(const std::string&);
             typedef void(*cbRequestPurchases)();
             typedef void(*cbRequestDetails)(const std::vector<std::string>& items);
 
