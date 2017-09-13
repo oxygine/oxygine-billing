@@ -11,11 +11,11 @@ namespace oxygine
         class PurchasedEvent : public Event
         {
         public:
-            enum { EVENT = sysEventID('b', 'p', 'r') };
+            enum { EVENT_SUCCESS = sysEventID('b', 'p', 'r') };
             enum { EVENT_CANCELED = sysEventID('b', 'c', 'n') };
             enum { EVENT_ERROR = sysEventID('b', 'e', 'r') };
 
-            PurchasedEvent(const std::string& Data1, const std::string& Data2, const std::string& Data3, eventType event = EVENT) : Event(event), data1(Data1), data2(Data2), data3(Data3) {}
+            PurchasedEvent(const std::string& Data1, const std::string& Data2, const std::string& Data3, eventType event) : Event(event), data1(Data1), data2(Data2), data3(Data3) {}
 
             std::string data1;
 
@@ -145,6 +145,20 @@ namespace oxygine
 
         namespace internal
         {
+            typedef void(*cbInit)();
+            typedef void(*cbFree)();
+            typedef void(*cbPurchase)(const std::string& id, const std::string& payload);
+            typedef void(*cbConsume)(const std::string&);
+            typedef void(*cbRequestPurchases)();
+            typedef void(*cbRequestDetails)(const std::vector<std::string>& items);
+
+            extern cbInit                       fInit;
+            extern cbFree                       fFree;
+            extern cbPurchase                   fPurchase;
+            extern cbConsume                    fConsume;
+            extern cbRequestPurchases           fRequestPurchases;
+            extern cbRequestDetails             fRequestDetails;
+
             const int ActivityOK = -1;
 
             const int RC_OK = 0;
