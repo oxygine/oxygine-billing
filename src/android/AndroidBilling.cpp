@@ -1,16 +1,16 @@
 #include <jni.h>
 #include <android/log.h>
 #include <assert.h>
-#include "core/oxygine.h"
-#include "core/Object.h"
-#include "core/ThreadDispatcher.h"
-#include "core/oxygine.h"
+#include "ox/oxygine.hpp"
+#include "ox/Object.hpp"
+#include "ox/ThreadDispatcher.hpp"
+#include "ox/oxygine.hpp"
 #include "AndroidBilling.h"
-#include "core/android/jniHelper.h"
-#include "core/android/jniUtils.h"
+#include "oxygine/core/android/jniHelper.h"
+#include "oxygine/core/android/jniUtils.h"
 #include "billing.h"
 
-#include "json/json.h"
+#include "ox/json.hpp"
 
 using namespace oxygine;
 
