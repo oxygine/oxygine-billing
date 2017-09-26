@@ -167,9 +167,7 @@ namespace oxygine
             const int RC_Canceled = 1;
 
             void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3);
-            //void detailed(const std::string&);
             void detailed(const std::string&);
-
             void dispatch(Event*);
 
             void init();

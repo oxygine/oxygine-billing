@@ -28,39 +28,7 @@ namespace oxygine
             cbConsume                    fConsume = [](const string&) {};
             cbRequestPurchases           fRequestPurchases = []() {};
             cbRequestDetails             fRequestDetails = [](const std::vector<std::string>& items) {};
-
-            cbParsePurchaseData          fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
-
-                Json::Reader reader;
-                Json::Value &data = pdata.data;
-                reader.parse(event->data1, data, false);
-
-                MarketType mt = getMarketType();
-
-                if (mt == google || mt == simulator)
-                {
-                    pdata.productID     = data["productId"].asString();
-                    pdata.purchaseToken = data["purchaseToken"].asString();
-                    pdata.purchaseState = data["purchaseState"].asInt();
-                    pdata.payload       = data["developerPayload"].asString();
-                }
-
-                if (mt == amazon)
-                {
-                    pdata.purchaseToken = data["receiptId"].asString();
-                    pdata.productID     = data["sku"].asString();
-                    pdata.payload       = event->data3;
-                }
-
-                if (mt == ios)
-                {
-                    pdata.productID     = data["productIdentifier"].asString();
-                    pdata.iosTransactionReceipt = data["transactionReceipt"].asString();
-
-                    pdata.purchaseToken = data["transactionIdentifier"].asString();
-                    pdata.payload       = event->data3;
-                }
-            };
+            cbParsePurchaseData          fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {OX_ASSERT(!"not impl"); };
         }
 
         using namespace internal;
@@ -83,6 +51,7 @@ namespace oxygine
             fRequestDetails = jniBillingUpdate;
 
             fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+                Json::Reader().parse(event->data1, pdata.data, false);
                 MarketType mt = getMarketType();
                 if (mt == google)
                 {
@@ -108,6 +77,7 @@ namespace oxygine
             fRequestDetails = iosBillingUpdate;
             
             fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+                Json::Reader().parse(event->data1, pdata.data, false);
                 pdata.productID             = pdata.data["productIdentifier"].asString();
                 pdata.iosTransactionReceipt = pdata.data["transactionReceipt"].asString();
                 pdata.purchaseToken         = pdata.data["transactionIdentifier"].asString();
@@ -123,6 +93,7 @@ namespace oxygine
             fRequestDetails = billingSimulatorRequestDetails;
 
             fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+                Json::Reader().parse(event->data1, pdata.data, false);
                 pdata.productID     = pdata.data["productId"].asString();
                 pdata.purchaseToken = pdata.data["purchaseToken"].asString();
                 pdata.purchaseState = pdata.data["purchaseState"].asInt();
@@ -281,22 +252,17 @@ namespace oxygine
             {
                 log::messageln("billing::internal::purchased %d %d <%s> <%s> <%s>", requestCode, resultCode, data1.c_str(), data2.c_str(), data3.c_str());
 
-                int event = PurchasedEvent::EVENT_SUCCESS;
-                MarketType mt = getMarketType();
-                if (mt == google || mt == simulator || mt == amazon || mt == ios)
+                int event = PurchasedEvent::EVENT_ERROR;
+                if (requestCode == ActivityOK)
                 {
-                    event = PurchasedEvent::EVENT_ERROR;
-                    if (requestCode == ActivityOK)
+                    switch (resultCode)
                     {
-                        switch (resultCode)
-                        {
-                            case RC_Canceled:
-                                event = PurchasedEvent::EVENT_CANCELED;
-                                break;
-                            case RC_OK:
-                                event = PurchasedEvent::EVENT_SUCCESS;
-                                break;
-                        }
+                        case RC_Canceled:
+                            event = PurchasedEvent::EVENT_CANCELED;
+                            break;
+                        case RC_OK:
+                            event = PurchasedEvent::EVENT_SUCCESS;
+                            break;
                     }
                 }
 
