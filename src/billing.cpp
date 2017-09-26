@@ -28,6 +28,39 @@ namespace oxygine
             cbConsume                    fConsume = [](const string&) {};
             cbRequestPurchases           fRequestPurchases = []() {};
             cbRequestDetails             fRequestDetails = [](const std::vector<std::string>& items) {};
+
+            cbParsePurchaseData          fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+
+                Json::Reader reader;
+                Json::Value &data = pdata.data;
+                reader.parse(event->data1, data, false);
+
+                MarketType mt = getMarketType();
+
+                if (mt == google || mt == simulator)
+                {
+                    pdata.productID     = data["productId"].asString();
+                    pdata.purchaseToken = data["purchaseToken"].asString();
+                    pdata.purchaseState = data["purchaseState"].asInt();
+                    pdata.payload       = data["developerPayload"].asString();
+                }
+
+                if (mt == amazon)
+                {
+                    pdata.purchaseToken = data["receiptId"].asString();
+                    pdata.productID     = data["sku"].asString();
+                    pdata.payload       = event->data3;
+                }
+
+                if (mt == ios)
+                {
+                    pdata.productID     = data["productIdentifier"].asString();
+                    pdata.iosTransactionReceipt = data["transactionReceipt"].asString();
+
+                    pdata.purchaseToken = data["transactionIdentifier"].asString();
+                    pdata.payload       = event->data3;
+                }
+            };
         }
 
         using namespace internal;
@@ -48,6 +81,24 @@ namespace oxygine
             fConsume = jniBillingConsume;
             fRequestPurchases = jniBillingGetPurchases;
             fRequestDetails = jniBillingUpdate;
+
+            fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+                MarketType mt = getMarketType();
+                if (mt == google)
+                {
+                    pdata.productID     = pdata.data["productId"].asString();
+                    pdata.purchaseToken = pdata.data["purchaseToken"].asString();
+                    pdata.purchaseState = pdata.data["purchaseState"].asInt();
+                    pdata.payload       = pdata.data["developerPayload"].asString();
+                }
+                if (mt == amazon)
+                {
+                    pdata.purchaseToken = pdata.data["receiptId"].asString();
+                    pdata.productID     = pdata.data["sku"].asString();
+                    pdata.payload       = event->data3;
+                }
+            };
+
 #elif IOS_STORE
             fInit = iosBillingInit;
             fFree = iosBillingFree;
@@ -55,6 +106,14 @@ namespace oxygine
             fConsume = iosBillingConsume;
             fRequestPurchases = iosBillingGetPurchases;
             fRequestDetails = iosBillingUpdate;
+            
+            fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+                pdata.productID             = pdata.data["productIdentifier"].asString();
+                pdata.iosTransactionReceipt = pdata.data["transactionReceipt"].asString();
+                pdata.purchaseToken         = pdata.data["transactionIdentifier"].asString();
+                pdata.payload               = pdata.event->data3;
+            };
+
 #else
             fInit = billingSimulatorInit;
             fFree = billingSimulatorFree;
@@ -62,15 +121,18 @@ namespace oxygine
             fConsume = billingSimulatorConsume;
             fRequestPurchases = billingSimulatorGetPurchases;
             fRequestDetails = billingSimulatorRequestDetails;
+
+            fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+                pdata.productID     = pdata.data["productId"].asString();
+                pdata.purchaseToken = pdata.data["purchaseToken"].asString();
+                pdata.purchaseState = pdata.data["purchaseState"].asInt();
+                pdata.payload       = pdata.data["developerPayload"].asString();
+            };
 #endif
 
 
-            log::messageln("billing::init");
-            OX_ASSERT(_dispatcher == 0);
-            _dispatcher = new EventDispatcher;
-
+            internal::init();
             fInit();
-
             log::messageln("billing::init done");
         }
 
@@ -116,6 +178,11 @@ namespace oxygine
             log::messageln("billing::purchase '%s', payload '%s'", id.c_str(), payload.c_str());
 
             fPurchase(id, payload);
+        }
+
+        void parsePurchaseData(const PurchasedEvent &event, ParsedPurchaseData &data)
+        {
+            fParsePurchaseData(&event, data);
         }
 
         void consume(const std::string& token)
@@ -193,6 +260,23 @@ namespace oxygine
 
         namespace internal
         {
+            void init()
+            {
+                log::messageln("billing::internal::init");
+                OX_ASSERT(_dispatcher == 0);
+                _dispatcher = new EventDispatcher;
+            }
+
+            void dispatch(Event* ev)
+            {
+                if (_dispatcher)
+                    _dispatcher->dispatchEvent(ev);
+                else
+                {
+                    log::error("billing::internal::dispatch can't dispatch event");
+                }
+            }
+
             void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3)
             {
                 log::messageln("billing::internal::purchased %d %d <%s> <%s> <%s>", requestCode, resultCode, data1.c_str(), data2.c_str(), data3.c_str());
@@ -217,62 +301,14 @@ namespace oxygine
                 }
 
                 PurchasedEvent ev(data1, data2, data3, event);
-                if (_dispatcher)
-                    _dispatcher->dispatchEvent(&ev);
+                dispatch(&ev);
             }
 
             void detailed(const std::string& str)
             {
                 log::messageln("billing::internal::detailed %s", str.c_str());
                 DetailsEvent ev(str);
-                if (_dispatcher)
-                    _dispatcher->dispatchEvent(&ev);
-            }
-
-            /*
-
-            void detailed(const std::string& data_)
-            {
-                Json::Value data;
-
-                Json::Reader reader;
-                reader.parse(data_, data, false);
-
-                DetailsEvent ev(data);
-                _dispatcher->dispatchEvent(&ev);
-            }
-            */
-        }
-
-        ParsePurchasedData::ParsePurchasedData(const PurchasedEvent* event)
-        {
-            Json::Reader reader;
-            reader.parse(event->data1, data, false);
-
-            MarketType mt = getMarketType();
-
-            if (mt == google || mt == simulator)
-            {
-                productID = data["productId"].asString();
-                purchaseToken = data["purchaseToken"].asString();
-                purchaseState = data["purchaseState"].asInt();
-                payload = data["developerPayload"].asString();
-            }
-
-            if (mt == amazon)
-            {
-                purchaseToken = data["receiptId"].asString();
-                productID = data["sku"].asString();
-                payload = event->data3;
-            }
-
-            if (mt == ios)
-            {
-                productID = data["productIdentifier"].asString();
-                iosTransactionReceipt = data["transactionReceipt"].asString();
-
-                purchaseToken = data["transactionIdentifier"].asString();
-                payload = event->data3;
+                dispatch(&ev);
             }
         }
     }

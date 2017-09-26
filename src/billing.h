@@ -27,12 +27,11 @@ namespace oxygine
             std::string data3;
         };
 
-        class ParsePurchasedData
+
+
+        class ParsedPurchaseData
         {
         public:
-            ParsePurchasedData(const PurchasedEvent* event);
-
-
             Json::Value data;
             Json::Value signature;
 
@@ -122,6 +121,7 @@ namespace oxygine
         void purchase(const std::string& id, const std::string& payload);
         void consume(const std::string& token);
 
+        void parsePurchaseData(const PurchasedEvent &event, ParsedPurchaseData &data);
         /**requestPurchases should be called right after billing::init() or when you are ready to receive purchased
         ios purchases wont work without this;
         */
@@ -151,6 +151,7 @@ namespace oxygine
             typedef void(*cbConsume)(const std::string&);
             typedef void(*cbRequestPurchases)();
             typedef void(*cbRequestDetails)(const std::vector<std::string>& items);
+            typedef void(*cbParsePurchaseData)(const PurchasedEvent *event, ParsedPurchaseData &data);
 
             extern cbInit                       fInit;
             extern cbFree                       fFree;
@@ -158,6 +159,7 @@ namespace oxygine
             extern cbConsume                    fConsume;
             extern cbRequestPurchases           fRequestPurchases;
             extern cbRequestDetails             fRequestDetails;
+            extern cbParsePurchaseData          fParsePurchaseData;
 
             const int ActivityOK = -1;
 
@@ -167,6 +169,10 @@ namespace oxygine
             void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3);
             //void detailed(const std::string&);
             void detailed(const std::string&);
+
+            void dispatch(Event*);
+
+            void init();
         }
     }
 }
