@@ -81,7 +81,7 @@ namespace oxygine
                 pdata.productID             = pdata.data["productIdentifier"].asString();
                 pdata.iosTransactionReceipt = pdata.data["transactionReceipt"].asString();
                 pdata.purchaseToken         = pdata.data["transactionIdentifier"].asString();
-                pdata.payload               = pdata.event->data3;
+                pdata.payload               = event->data3;
             };
 
 #else
