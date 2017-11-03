@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 #include "IOSBilling.h"
-
+#include "ox/oxygine.hpp"
+#include "ox/ThreadDispatcher.hpp"
 
 #include "billing.h"
 
@@ -19,7 +20,9 @@ using namespace oxygine;
 {
     //NSArray *_products;
     NSMutableDictionary *_products;
-    NSMutableDictionary *_transactions;
+    NSMutableDictionary *_transactionsDict;
+    NSMutableArray* _transactionsQueue;
+    BOOL _ready;
 }
 
 
@@ -33,13 +36,17 @@ using namespace oxygine;
     
     
     _products = [NSMutableDictionary dictionary];
-    _transactions = [NSMutableDictionary dictionary];
+    _transactionsDict = [NSMutableDictionary dictionary];
+    _transactionsQueue = [NSMutableArray array];
+    _ready = false;
+    
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
     
     return self;
 }
 
 -(void)free {
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
+    _ready = false;
 }
 
 
@@ -52,15 +59,14 @@ using namespace oxygine;
 }
 
 
-
-- (void)paymentQueue:(SKPaymentQueue *)queue
+- (void)handleQueue:(SKPaymentQueue *)queue
  updatedTransactions:(NSArray *)transactions
 {
     for (SKPaymentTransaction *transaction in transactions) {
         
         const char *trID = transaction.transactionIdentifier ? transaction.transactionIdentifier.UTF8String : "";
         const char *prodID = transaction.payment.productIdentifier.UTF8String;
-        log::messageln("billing::transation %d '%s' '%s'", transaction.transactionState, trID, prodID);
+        log::messageln("billing::transaction %d '%s' '%s'", transaction.transactionState, trID, prodID);
         
         switch (transaction.transactionState)
         {
@@ -92,7 +98,7 @@ using namespace oxygine;
                 
             case SKPaymentTransactionStatePurchased:
             {
-                [_transactions setObject:transaction forKey:transaction.transactionIdentifier];
+                [_transactionsDict setObject:transaction forKey:transaction.transactionIdentifier];
                 
                 Json::Value data(Json::objectValue);
                 
@@ -123,19 +129,36 @@ using namespace oxygine;
 }
 
 
+- (void)paymentQueue:(SKPaymentQueue *)queue
+ updatedTransactions:(NSArray *)transactions
+{
+    if (_ready)
+    {
+        [self handleQueue:queue updatedTransactions:transactions];
+    }
+    else
+    {
+        [_transactionsQueue addObjectsFromArray:transactions];
+    }
+}
+
+-(void)ready {
+    _ready = true;
+}
 
 - (void)restore {
     
-    NSArray *all = [_transactions allValues];
+    if (!_ready)
+        return;
+    
+    NSArray *all = [_transactionsDict allValues];
     NSArray *purchased = [all filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
         return ((SKPaymentTransaction*)object).transactionState == SKPaymentTransactionStatePurchased;
     }]];
     
-    [self paymentQueue:[SKPaymentQueue defaultQueue]  updatedTransactions: purchased];
-    
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-    
+    [self handleQueue:[SKPaymentQueue defaultQueue] updatedTransactions: purchased];
+    [self handleQueue:[SKPaymentQueue defaultQueue] updatedTransactions:_transactionsQueue];
+    [_transactionsQueue removeAllObjects];
 }
 
 - (void)productsRequest:(SKProductsRequest *)request
@@ -144,8 +167,6 @@ using namespace oxygine;
     NSArray *products = [response products];
     
     NSArray *inv = response.invalidProductIdentifiers;
-    int q=0;
-    
     
     for (NSString *invalidIdentifier in response.invalidProductIdentifiers) {
         // Handle any invalid product identifiers.
@@ -157,9 +178,6 @@ using namespace oxygine;
     
     for (SKProduct *product in response.products) {
         [_products setObject:product forKey:product.productIdentifier];
-        
-        //Json::Value item(Json::ArrayIndex);
-        //data.append(item);
     }
     
     
@@ -194,12 +212,12 @@ using namespace oxygine;
 {
     NSString *str = [NSString stringWithUTF8String:token];
     
-    SKPaymentTransaction *trans = _transactions[str];
+    SKPaymentTransaction *trans = _transactionsDict[str];
     if (!trans)
         return;
     
     [[SKPaymentQueue defaultQueue] finishTransaction:trans];
-    [_transactions removeObjectForKey:trans.transactionIdentifier];
+    [_transactionsDict removeObjectForKey:trans.transactionIdentifier];
 }
 
 @end
@@ -209,13 +227,14 @@ Billing *_billing = 0;
 
 void iosBillingInit()
 {
+    if (_billing)
+        return;
     _billing = [[Billing alloc] init];
 }
 
 void iosBillingFree()
 {
     [_billing free];
-    _billing = 0;
 }
 
 void iosBillingUpdate(const vector<string> &items)
@@ -245,7 +264,10 @@ void iosBillingConsume(const string &token)
 
 void iosBillingGetPurchases()
 {
-    [_billing restore];
+    [_billing ready];
+    core::getMainThreadDispatcher().postCallback([](){
+        [_billing restore];
+    });
 }
 
 bool iosBillingHasProduct(const string &product)
