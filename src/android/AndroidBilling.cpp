@@ -142,16 +142,8 @@ void jniBillingUpdate(const vector<string>& ids)
         JNIEnv* env = jniGetEnv();
         LOCAL_REF_HOLDER(env);
 
-        jclass jclassString = env->FindClass("java/lang/String");
-        JNI_NOT_NULL(jclassString);
 
-
-        jobjectArray array = env->NewObjectArray(ids.size(), jclassString, 0);
-        for (size_t i = 0; i < ids.size(); ++i)
-        {
-            jstring jstr = env->NewStringUTF(ids[i].c_str());
-            env->SetObjectArrayElement(array, i, jstr);
-        }
+        jobjectArray array = jniGetObjectStringArray(ids, env);
 
         jmethodID requestBillingDetails = env->GetMethodID(_jBillingClass, "requestDetails", "([Ljava/lang/String;)V");
         JNI_NOT_NULL(requestBillingDetails);
