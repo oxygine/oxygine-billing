@@ -59,7 +59,7 @@ extern "C"
 
     JNIEXPORT void JNICALL Java_org_oxygine_billing_Billing_nativeBillingPurchases(JNIEnv* env, jclass cl, jint requestCode, jint resultCode, jobjectArray jItems, jobjectArray jSignatures, jobjectArray jPayloads)
     {
-        log::messageln("Java_org_oxygine_billing_Billing_nativeBillingPurchases2");
+        logs::messageln("Java_org_oxygine_billing_Billing_nativeBillingPurchases2");
         vector<string> items;
         jniGetStringArray(items, env, jItems);
 
@@ -104,10 +104,10 @@ void jniBillingInit()
     }
     catch (const notFound&)
     {
-        log::error("jniBillingInit failed, class/member not found");
+        logs::error("jniBillingInit failed, class/member not found");
     }
 
-    log::messageln("jniBillingType %s", jniBillingGetType().c_str());
+    logs::messageln("jniBillingType %s", jniBillingGetType().c_str());
 }
 
 void jniBillingFree()

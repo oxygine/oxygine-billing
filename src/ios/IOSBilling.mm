@@ -66,7 +66,7 @@ using namespace oxygine;
         
         const char *trID = transaction.transactionIdentifier ? transaction.transactionIdentifier.UTF8String : "";
         const char *prodID = transaction.payment.productIdentifier.UTF8String;
-        log::messageln("billing::transaction %d '%s' '%s'", transaction.transactionState, trID, prodID);
+        logs::messageln("billing::transaction %d '%s' '%s'", transaction.transactionState, trID, prodID);
         
         switch (transaction.transactionState)
         {

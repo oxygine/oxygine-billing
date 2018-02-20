@@ -104,12 +104,12 @@ namespace oxygine
 
             internal::init();
             fInit();
-            log::messageln("billing::init done");
+            logs::messageln("billing::init done");
         }
 
         void free()
         {
-            log::messageln("billing::free");
+            logs::messageln("billing::free");
 
             if (!_dispatcher)
                 return;
@@ -119,7 +119,7 @@ namespace oxygine
             _dispatcher->removeAllEventListeners();
             _dispatcher = 0;
 
-            log::messageln("billing::free done");
+            logs::messageln("billing::free done");
         }
 
         bool isInitialized()
@@ -146,7 +146,7 @@ namespace oxygine
 
         void purchase(const std::string& id, const std::string& payload)
         {
-            log::messageln("billing::purchase '%s', payload '%s'", id.c_str(), payload.c_str());
+            logs::messageln("billing::purchase '%s', payload '%s'", id.c_str(), payload.c_str());
 
             fPurchase(id, payload);
         }
@@ -158,23 +158,23 @@ namespace oxygine
 
         void consume(const std::string& token)
         {
-            log::messageln("billing::consume");
+            logs::messageln("billing::consume");
             fConsume(token);
-            log::messageln("billing::consume done");
+            logs::messageln("billing::consume done");
         }
 
         void requestPurchases()
         {
-            log::messageln("billing::requestPurchases");
+            logs::messageln("billing::requestPurchases");
             fRequestPurchases();
-            log::messageln("billing::requestPurchases done");
+            logs::messageln("billing::requestPurchases done");
         }
 
         void requestDetails(const std::vector<std::string>& items)
         {
-            log::messageln("billing::requestDetails");
+            logs::messageln("billing::requestDetails");
             fRequestDetails(items);
-            log::messageln("billing::requestDetails done");
+            logs::messageln("billing::requestDetails done");
         }
 
         void simulatorSetDetails(const Json::Value& details)
@@ -233,7 +233,7 @@ namespace oxygine
         {
             void init()
             {
-                log::messageln("billing::internal::init");
+                logs::messageln("billing::internal::init");
                 OX_ASSERT(_dispatcher == 0);
                 _dispatcher = new EventDispatcher;
             }
@@ -244,13 +244,13 @@ namespace oxygine
                     _dispatcher->dispatchEvent(ev);
                 else
                 {
-                    log::error("billing::internal::dispatch can't dispatch event");
+                    logs::error("billing::internal::dispatch can't dispatch event");
                 }
             }
 
             void purchased(int requestCode, int resultCode, const std::string& data1, const std::string& data2, const std::string& data3)
             {
-                log::messageln("billing::internal::purchased %d %d <%s> <%s> <%s>", requestCode, resultCode, data1.c_str(), data2.c_str(), data3.c_str());
+                logs::messageln("billing::internal::purchased %d %d <%s> <%s> <%s>", requestCode, resultCode, data1.c_str(), data2.c_str(), data3.c_str());
 
                 int event = PurchasedEvent::EVENT_ERROR;
                 if (requestCode == ActivityOK)
@@ -272,7 +272,7 @@ namespace oxygine
 
             void detailed(const std::string& str)
             {
-                log::messageln("billing::internal::detailed %s", str.c_str());
+                logs::messageln("billing::internal::detailed %s", str.c_str());
                 DetailsEvent ev(str);
                 dispatch(&ev);
             }
