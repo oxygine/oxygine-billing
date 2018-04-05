@@ -13,6 +13,12 @@
 
 using namespace oxygine;
 
+#if OXYGINE_VERSION >= 10
+#define OUTX TouchEvent::OUTX
+#else
+#define OUTX TouchEvent::OUT
+#endif
+
 DECLARE_SMART(Btn, spBtn);
 class Btn : public Box9Sprite
 {
@@ -29,7 +35,7 @@ public:
         setResAnim(DebugActor::resSystem->getResAnim("btn"));
 
         addEventListener(TouchEvent::OVER, CLOSURE(this, &Btn::touch));
-        addEventListener(TouchEvent::OUT, CLOSURE(this, &Btn::touch));
+        addEventListener(OUTX, CLOSURE(this, &Btn::touch));
     }
 
     void setText(const string& txt)
@@ -41,7 +47,7 @@ public:
     {
         if (ev->type == TouchEvent::OVER)
             setColor(Color::GreenYellow);
-        if (ev->type == TouchEvent::OUT)
+        if (ev->type == OUTX)
             setColor(Color::Green);
     }
 
