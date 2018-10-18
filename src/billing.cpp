@@ -28,7 +28,7 @@ namespace oxygine
             cbConsume                    fConsume = [](const string&) {};
             cbRequestPurchases           fRequestPurchases = []() {};
             cbRequestDetails             fRequestDetails = [](const std::vector<std::string>& items) {};
-            cbParsePurchaseData          fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {OX_ASSERT(!"not impl"); };
+            cbParsePurchaseData          fParsePurchaseData = [](const PurchasedEvent* event, ParsedPurchaseData& pdata) {OX_ASSERT(!"not impl"); };
         }
 
         using namespace internal;
@@ -50,7 +50,8 @@ namespace oxygine
             fRequestPurchases = jniBillingGetPurchases;
             fRequestDetails = jniBillingUpdate;
 
-            fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+            fParsePurchaseData = [](const PurchasedEvent * event, ParsedPurchaseData & pdata)
+            {
                 Json::Reader().parse(event->data1, pdata.data, false);
                 MarketType mt = getMarketType();
                 if (mt == google)
@@ -75,8 +76,9 @@ namespace oxygine
             fConsume = iosBillingConsume;
             fRequestPurchases = iosBillingGetPurchases;
             fRequestDetails = iosBillingUpdate;
-            
-            fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+
+            fParsePurchaseData = [](const PurchasedEvent * event, ParsedPurchaseData & pdata)
+            {
                 Json::Reader().parse(event->data1, pdata.data, false);
                 pdata.productID             = pdata.data["productIdentifier"].asString();
                 pdata.iosTransactionReceipt = pdata.data["transactionReceipt"].asString();
@@ -92,7 +94,8 @@ namespace oxygine
             fRequestPurchases = billingSimulatorGetPurchases;
             fRequestDetails = billingSimulatorRequestDetails;
 
-            fParsePurchaseData = [](const PurchasedEvent *event, ParsedPurchaseData &pdata) {
+            fParsePurchaseData = [](const PurchasedEvent * event, ParsedPurchaseData & pdata)
+            {
                 Json::Reader().parse(event->data1, pdata.data, false);
                 pdata.productID     = pdata.data["productId"].asString();
                 pdata.purchaseToken = pdata.data["purchaseToken"].asString();
@@ -151,7 +154,7 @@ namespace oxygine
             fPurchase(id, payload);
         }
 
-        void parsePurchaseData(const PurchasedEvent &event, ParsedPurchaseData &data)
+        void parsePurchaseData(const PurchasedEvent& event, ParsedPurchaseData& data)
         {
             fParsePurchaseData(&event, data);
         }

@@ -121,7 +121,7 @@ namespace oxygine
         void purchase(const std::string& id, const std::string& payload);
         void consume(const std::string& token);
 
-        void parsePurchaseData(const PurchasedEvent &event, ParsedPurchaseData &data);
+        void parsePurchaseData(const PurchasedEvent& event, ParsedPurchaseData& data);
         /**requestPurchases should be called right after billing::init() or when you are ready to receive purchased
         ios purchases wont work without this;
         */
@@ -151,7 +151,7 @@ namespace oxygine
             typedef void(*cbConsume)(const std::string&);
             typedef void(*cbRequestPurchases)();
             typedef void(*cbRequestDetails)(const std::vector<std::string>& items);
-            typedef void(*cbParsePurchaseData)(const PurchasedEvent *event, ParsedPurchaseData &data);
+            typedef void(*cbParsePurchaseData)(const PurchasedEvent* event, ParsedPurchaseData& data);
 
             extern cbInit                       fInit;
             extern cbFree                       fFree;
