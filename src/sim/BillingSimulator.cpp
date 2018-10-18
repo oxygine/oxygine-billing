@@ -152,7 +152,7 @@ void billingSimulatorInit()
 
 void billingSimulatorFree()
 {
-
+    int q = 0;
 }
 
 void save()
@@ -216,19 +216,20 @@ void billingSimulatorPurchase(const string& id, const string& payload)
     d->setTitle(str);
 
 
+    BillingDialog *ptr = d.get();
     if (alreadyPurchased)
     {
         d->_btnCancel->setVisible(false);
         d->_btnOk->addEventListener(TouchEvent::CLICK, [ = ](Event*)
         {
-            d->detach();
+            ptr->detach();
         });
     }
     else
     {
         d->_btnOk->addEventListener(TouchEvent::CLICK, [ = ](Event*)
         {
-            d->detach();
+            ptr->detach();
             getStage()->addTween(TweenDummy(), rand() % 1000 + 500)->setDoneCallback([ = ](Event*)
             {
 
@@ -236,7 +237,7 @@ void billingSimulatorPurchase(const string& id, const string& payload)
                 data["productId"] = id;
                 data["purchaseState"] = 0;
                 data["purchaseTime"] = getTimeUTCMS();
-
+                        
                 char str[255];
                 safe_sprintf(str, "%lld", getTimeUTCMS());
                 data["purchaseToken"] = str;
@@ -244,7 +245,7 @@ void billingSimulatorPurchase(const string& id, const string& payload)
 
                 Json::Value item(Json::objectValue);
                 item["data"] = data;
-                item["sign"] = "qwe";
+                item["sign"] = (rand() % 2) == 0 ? "fake_dev_signature" : "fake_dev_broken_signature";
 
                 _purchases.append(item);
                 save();
@@ -256,7 +257,7 @@ void billingSimulatorPurchase(const string& id, const string& payload)
         d->_btnCancel->addEventListener(TouchEvent::CLICK, [ = ](Event*)
         {
             billing::internal::purchased(billing::internal::ActivityOK, billing::internal::RC_Canceled, "", "", "");
-            d->detach();
+            ptr->detach();
         });
     }
 }
@@ -297,10 +298,12 @@ void billingSimulatorRequestDetails(const vector<std::string>& items)
         Json::Value data(Json::arrayValue);
         for (size_t i = 0; i < items.size(); ++i)
         {
+            string itemID = items[i];
             for (size_t n = 0; n < _details.size(); ++n)
             {
-                if (_details[(int)n]["productId"].asString() == items[i])
-                    data.append(_details[(int)i]);
+                string prodID = _details[(int)n]["productId"].asString();
+                if (prodID == itemID)
+                    data.append(_details[(int)n]);
             }
         }
         Json::FastWriter writer;
