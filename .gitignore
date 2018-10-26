@@ -22,3 +22,4 @@ android/billing/oxygine-billing.iml
 example/HelloWorldBilling/data-ram/
 *.dll
 example/HelloWorldBilling/proj.win32/Release_v140/
+example/HelloWorldBilling/proj.android/.externalNativeBuild/
