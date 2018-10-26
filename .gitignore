@@ -23,3 +23,5 @@ example/HelloWorldBilling/data-ram/
 *.dll
 example/HelloWorldBilling/proj.win32/Release_v140/
 example/HelloWorldBilling/proj.android/.externalNativeBuild/
+example/HelloWorldBilling/proj.win32/Debug_v141/
+example/HelloWorldBilling/proj.win32/.vs/

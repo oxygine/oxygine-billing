@@ -21,7 +21,7 @@ public:
         addButton("purchase", "Purchase Item");
         addButton("get_purchases", "Request Purchases");
         addButton("get_details", "Request Details");
-        addButton("consume", "Consume");
+        addButton("consume", "");
 	}
 
 
@@ -45,7 +45,10 @@ public:
         if (id == "consume")
         {
             if (!lastPurchasedItemToken.empty())
+            {
                 billing::consume(lastPurchasedItemToken);
+                Test::instance->updateText("consume", "");
+            }
         }
 	}
 };
@@ -75,17 +78,24 @@ void example_init()
     billing::simulatorSetDetails(itemsObject);
 #endif
 
-	billing::dispatcher()->addEventListener(billing::PurchasedEvent::EVENT, [](Event* e){
+	billing::dispatcher()->addEventListener(billing::PurchasedEvent::EVENT_SUCCESS, [](Event* e){
 		
         //Test::instance->notify("purchased");
 
         billing::PurchasedEvent *ev = safeCast<billing::PurchasedEvent*>(e);
 
-        billing::ParsePurchasedData parced(ev);
+        billing::ParsedPurchaseData parced;
+        billing::parsePurchaseData(*ev, parced);
+        
         lastPurchasedItemToken = parced.purchaseToken;
         Test::instance->updateText("consume", "Consume item: " + parced.productID + ":" + lastPurchasedItemToken);
 
-        Test::instance->notify(ev->data, 10000, true);
+        Test::instance->notify(ev->data1, 10000);
+        Test::instance->notify(ev->data2, 10000);
+        Test::instance->notify(ev->data3, 10000);
+
+        //billing::consume(parced.purchaseToken);
+
 	});
 
 	billing::dispatcher()->addEventListener(billing::DetailsEvent::EVENT, [](Event* e){
@@ -94,7 +104,7 @@ void example_init()
         billing::DetailsEvent *ev = safeCast<billing::DetailsEvent*>(e);
         billing::ParsedDetailsData parced(ev);
 
-        Test::instance->notify(ev->data, 10000, true);
+        Test::instance->notify(ev->data, 10000);
 	});
 
 	Test::init();
