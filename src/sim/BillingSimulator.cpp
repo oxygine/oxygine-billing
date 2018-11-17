@@ -216,7 +216,7 @@ void billingSimulatorPurchase(const string& id, const string& payload)
     d->setTitle(str);
 
 
-    BillingDialog *ptr = d.get();
+    BillingDialog* ptr = d.get();
     if (alreadyPurchased)
     {
         d->_btnCancel->setVisible(false);
@@ -237,10 +237,10 @@ void billingSimulatorPurchase(const string& id, const string& payload)
                 data["productId"] = id;
                 data["purchaseState"] = 0;
                 data["purchaseTime"] = getTimeUTCMS();
-                
+
                 char str[255];
                 safe_sprintf(str, "%lld", getTimeUTCMS());
-                data["orderId"] = str;                        
+                data["orderId"] = str;
                 data["purchaseToken"] = str;
                 data["developerPayload"] = payload;
 
